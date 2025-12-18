@@ -42,12 +42,20 @@
       </div>
 
       <!-- Editor Section -->
-      <div v-else-if="finalImage">
+      <div v-else-if="finalImage && finalImage.startsWith('data:image/')">
         <PhotoEditor
           :image-data-url="finalImage"
           @download="handleEditorDownload"
           @back="resetSession"
         />
+      </div>
+
+      <!-- Fallback Loading -->
+      <div v-else class="flex items-center justify-center min-h-96">
+        <div class="text-center">
+          <div class="animate-spin rounded-full h-12 w-12 border-b-2 border-blue-600 mx-auto mb-4"></div>
+          <p class="text-gray-600">Preparing editor...</p>
+        </div>
       </div>
 
       <!-- Processing Overlay -->
@@ -69,7 +77,7 @@
 </template>
 
 <script setup>
-import { ref, onMounted } from 'vue'
+import { ref, onMounted, nextTick } from 'vue'
 import CameraPreview from '@/components/CameraPreview.vue'
 import CountdownOverlay from '@/components/CountdownOverlay.vue'
 import ControlPanel from '@/components/ControlPanel.vue'
@@ -134,8 +142,16 @@ const handleStartPhotoshoot = async (settings) => {
     })
     
     // Get final image and go directly to editor
-    finalImage.value = getCanvasDataURL()
-    console.log('Final image created:', finalImage.value ? 'Success' : 'Failed')
+    const imageData = getCanvasDataURL()
+    console.log('Canvas data URL:', imageData ? 'Generated' : 'Failed')
+    console.log('Image data length:', imageData ? imageData.length : 0)
+    
+    finalImage.value = imageData
+    console.log('Final image set:', finalImage.value ? 'Success' : 'Failed')
+    
+    // Wait for DOM update
+    await nextTick()
+    console.log('DOM updated, finalImage reactive:', finalImage.value ? 'Ready' : 'Not ready')
     
   } catch (err) {
     console.error('Photoshoot failed:', err)

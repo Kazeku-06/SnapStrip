@@ -271,7 +271,13 @@ watch(() => props.imageDataURL, (newImageURL) => {
 }, { immediate: true })
 
 const setupCanvas = () => {
-  console.log('Setting up canvas with image:', props.imageDataURL)
+  console.log('Setting up canvas with image:', props.imageDataURL ? 'Valid' : 'Invalid')
+  
+  if (!props.imageDataURL || !props.imageDataURL.startsWith('data:image/')) {
+    console.error('Invalid image data URL')
+    return
+  }
+  
   const canvas = editorCanvas.value
   
   if (!canvas) {
