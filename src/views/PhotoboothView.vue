@@ -42,19 +42,21 @@
       </div>
 
       <!-- Editor Section -->
-      <div v-else-if="finalImage && finalImage.startsWith('data:image/')">
+      <div v-else>
         <PhotoEditor
+          v-if="finalImage"
+          :key="finalImage"
           :image-data-url="finalImage"
           @download="handleEditorDownload"
           @back="resetSession"
         />
-      </div>
 
-      <!-- Fallback Loading -->
-      <div v-else class="flex items-center justify-center min-h-96">
-        <div class="text-center">
-          <div class="animate-spin rounded-full h-12 w-12 border-b-2 border-blue-600 mx-auto mb-4"></div>
-          <p class="text-gray-600">Preparing editor...</p>
+        <!-- Fallback Loading -->
+        <div v-else class="flex items-center justify-center min-h-96">
+          <div class="text-center">
+            <div class="animate-spin rounded-full h-12 w-12 border-b-2 border-blue-600 mx-auto mb-4"></div>
+            <p class="text-gray-600">Preparing editor...</p>
+          </div>
         </div>
       </div>
 
@@ -77,7 +79,7 @@
 </template>
 
 <script setup>
-import { ref, onMounted, nextTick } from 'vue'
+import { ref, onMounted } from 'vue'
 import CameraPreview from '@/components/CameraPreview.vue'
 import CountdownOverlay from '@/components/CountdownOverlay.vue'
 import ControlPanel from '@/components/ControlPanel.vue'
@@ -122,6 +124,8 @@ const { isDownloading, downloadDataURL } = useDownload()
 const finalImage = ref(null)
 const totalShots = ref(4)
 
+
+
 // Methods
 const handleStartPhotoshoot = async (settings) => {
   try {
@@ -146,12 +150,11 @@ const handleStartPhotoshoot = async (settings) => {
     console.log('Canvas data URL:', imageData ? 'Generated' : 'Failed')
     console.log('Image data length:', imageData ? imageData.length : 0)
     
-    finalImage.value = imageData
-    console.log('Final image set:', finalImage.value ? 'Success' : 'Failed')
-    
-    // Wait for DOM update
-    await nextTick()
-    console.log('DOM updated, finalImage reactive:', finalImage.value ? 'Ready' : 'Not ready')
+    // Add small delay to ensure proper reactivity
+    setTimeout(() => {
+      finalImage.value = imageData
+      console.log('Final image set with delay:', finalImage.value ? 'Success' : 'Failed')
+    }, 100)
     
   } catch (err) {
     console.error('Photoshoot failed:', err)
