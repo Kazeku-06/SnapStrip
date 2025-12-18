@@ -34,15 +34,8 @@
         autoplay
         muted
         playsinline
-        class="w-full h-auto rounded-lg shadow-lg bg-black"
+        class="w-full h-auto rounded-lg shadow-lg bg-black camera-video"
       ></video>
-      
-      <!-- Mirror effect for front camera -->
-      <style scoped>
-        video {
-          transform: scaleX(-1);
-        }
-      </style>
     </div>
 
     <!-- Placeholder -->
@@ -68,3 +61,10 @@ defineProps({
 
 defineEmits(['retry'])
 </script>
+
+<style scoped>
+/* Mirror effect for front camera */
+.camera-video {
+  transform: scaleX(-1);
+}
+</style>
