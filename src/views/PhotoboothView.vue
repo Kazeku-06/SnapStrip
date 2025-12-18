@@ -41,13 +41,12 @@
         </div>
       </div>
 
-      <!-- Results Section -->
+      <!-- Editor Section -->
       <div v-else>
-        <PhotoResult
+        <PhotoEditor
           :image-data-url="finalImage"
-          :is-downloading="isDownloading"
-          @download="handleDownload"
-          @new-session="resetSession"
+          @download="handleEditorDownload"
+          @back="resetSession"
         />
       </div>
 
@@ -74,7 +73,7 @@ import { ref, onMounted } from 'vue'
 import CameraPreview from '@/components/CameraPreview.vue'
 import CountdownOverlay from '@/components/CountdownOverlay.vue'
 import ControlPanel from '@/components/ControlPanel.vue'
-import PhotoResult from '@/components/PhotoResult.vue'
+import PhotoEditor from '@/components/PhotoEditor.vue'
 import { useCamera } from '@/composables/useCamera'
 import { useCountdown } from '@/composables/useCountdown'
 import { useBurstCapture } from '@/composables/useBurstCapture'
@@ -134,7 +133,7 @@ const handleStartPhotoshoot = async (settings) => {
       showTimestamp: true
     })
     
-    // Get final image
+    // Get final image and go directly to editor
     finalImage.value = getCanvasDataURL()
     
   } catch (err) {
@@ -143,12 +142,12 @@ const handleStartPhotoshoot = async (settings) => {
   }
 }
 
-const handleDownload = () => {
-  if (finalImage.value) {
-    const timestamp = new Date().toISOString().slice(0, 19).replace(/:/g, '-')
-    const filename = `photobooth-${timestamp}.png`
-    downloadDataURL(finalImage.value, filename)
-  }
+
+
+const handleEditorDownload = (editedImageDataURL) => {
+  const timestamp = new Date().toISOString().slice(0, 19).replace(/:/g, '-')
+  const filename = `photobooth-edited-${timestamp}.png`
+  downloadDataURL(editedImageDataURL, filename)
 }
 
 const resetSession = () => {
