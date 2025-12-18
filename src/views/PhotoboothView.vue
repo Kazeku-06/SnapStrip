@@ -12,7 +12,7 @@
         <!-- Camera Section -->
         <div class="space-y-4">
           <CameraPreview
-            :video-element="videoElement"
+            :stream="stream"
             :is-initialized="isInitialized"
             :is-loading="isLoading"
             :error="error"
@@ -83,6 +83,7 @@ import { useDownload } from '@/composables/useDownload'
 
 // Composables
 const { 
+  stream,
   videoElement, 
   isInitialized, 
   isLoading, 

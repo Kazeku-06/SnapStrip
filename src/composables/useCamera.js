@@ -21,13 +21,34 @@ export function useCamera() {
         audio: false
       })
 
+      console.log('Got media stream:', mediaStream)
       stream.value = mediaStream
       
-      if (videoElement.value) {
-        videoElement.value.srcObject = mediaStream
-        await videoElement.value.play()
+      // Create a hidden video element for capture
+      if (!videoElement.value) {
+        videoElement.value = document.createElement('video')
+        videoElement.value.autoplay = true
+        videoElement.value.muted = true
+        videoElement.value.playsInline = true
       }
       
+      videoElement.value.srcObject = mediaStream
+      
+      // Wait for video to be ready
+      await new Promise((resolve, reject) => {
+        videoElement.value.onloadedmetadata = () => {
+          console.log('Video metadata loaded')
+          videoElement.value.play()
+            .then(() => {
+              console.log('Hidden video playing')
+              resolve()
+            })
+            .catch(reject)
+        }
+        videoElement.value.onerror = reject
+      })
+      
+      console.log('Camera initialized successfully')
       isInitialized.value = true
     } catch (err) {
       console.error('Camera initialization failed:', err)
@@ -44,6 +65,9 @@ export function useCamera() {
       stream.value.getTracks().forEach(track => track.stop())
       stream.value = null
     }
+    if (videoElement.value) {
+      videoElement.value.srcObject = null
+    }
     isInitialized.value = false
   }
 
@@ -58,7 +82,9 @@ export function useCamera() {
     canvas.width = videoElement.value.videoWidth
     canvas.height = videoElement.value.videoHeight
     
-    ctx.drawImage(videoElement.value, 0, 0)
+    // Flip the image horizontally to match the preview
+    ctx.scale(-1, 1)
+    ctx.drawImage(videoElement.value, -canvas.width, 0)
     
     return canvas.toDataURL('image/png')
   }

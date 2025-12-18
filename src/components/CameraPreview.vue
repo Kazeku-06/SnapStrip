@@ -30,11 +30,12 @@
     <!-- Camera Preview -->
     <div v-else-if="isInitialized" class="relative">
       <video
-        ref="videoElement"
+        ref="localVideoRef"
         autoplay
         muted
         playsinline
         class="w-full h-auto rounded-lg shadow-lg bg-black camera-video"
+        style="min-height: 400px;"
       ></video>
     </div>
 
@@ -52,14 +53,79 @@
 </template>
 
 <script setup>
-defineProps({
-  videoElement: Object,
+import { ref, watch, onMounted, nextTick } from 'vue'
+
+const props = defineProps({
+  stream: Object,
   isInitialized: Boolean,
   isLoading: Boolean,
   error: String
 })
 
 defineEmits(['retry'])
+
+const localVideoRef = ref(null)
+
+// Watch for stream changes and attach to video element
+watch(() => props.stream, async (newStream) => {
+  console.log('Stream changed:', newStream)
+  console.log('localVideoRef.value:', localVideoRef.value)
+  
+  if (newStream) {
+    // Wait for next tick to ensure DOM is updated
+    await nextTick()
+    console.log('After nextTick, localVideoRef.value:', localVideoRef.value)
+    
+    if (localVideoRef.value) {
+      console.log('Setting stream to video element')
+      localVideoRef.value.srcObject = newStream
+      try {
+        await localVideoRef.value.play()
+        console.log('Video playing successfully')
+      } catch (err) {
+        console.error('Error playing video:', err)
+      }
+    } else {
+      console.log('Video element not available yet')
+    }
+  }
+}, { immediate: true })
+
+// Watch for isInitialized changes
+watch(() => props.isInitialized, async (isInit) => {
+  console.log('isInitialized changed:', isInit)
+  if (isInit && props.stream) {
+    await nextTick()
+    console.log('After isInit nextTick, localVideoRef.value:', localVideoRef.value)
+    
+    if (localVideoRef.value) {
+      console.log('Setting stream after initialization')
+      localVideoRef.value.srcObject = props.stream
+      try {
+        await localVideoRef.value.play()
+        console.log('Video playing after initialization')
+      } catch (err) {
+        console.error('Error playing video after initialization:', err)
+      }
+    }
+  }
+})
+
+// Also try on mount
+onMounted(async () => {
+  console.log('CameraPreview mounted, stream:', props.stream)
+  await nextTick()
+  if (props.stream && localVideoRef.value) {
+    console.log('Setting stream on mount')
+    localVideoRef.value.srcObject = props.stream
+    try {
+      await localVideoRef.value.play()
+      console.log('Video playing on mount')
+    } catch (err) {
+      console.error('Error playing video on mount:', err)
+    }
+  }
+})
 </script>
 
 <style scoped>
