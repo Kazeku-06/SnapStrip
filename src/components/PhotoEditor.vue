@@ -222,7 +222,7 @@
 </template>
 
 <script setup>
-import { ref, onMounted, nextTick } from 'vue'
+import { ref, onMounted, nextTick, watch } from 'vue'
 
 const props = defineProps({
   imageDataURL: {
@@ -255,25 +255,46 @@ let canvasContext = null
 
 // Initialize canvas
 onMounted(async () => {
+  console.log('PhotoEditor mounted')
   await nextTick()
-  if (editorCanvas.value) {
+  if (editorCanvas.value && props.imageDataURL) {
     setupCanvas()
   }
 })
 
+// Watch for imageDataURL changes
+watch(() => props.imageDataURL, (newImageURL) => {
+  console.log('Image URL changed:', newImageURL)
+  if (newImageURL && editorCanvas.value) {
+    setupCanvas()
+  }
+}, { immediate: true })
+
 const setupCanvas = () => {
+  console.log('Setting up canvas with image:', props.imageDataURL)
   const canvas = editorCanvas.value
+  
+  if (!canvas) {
+    console.error('Canvas element not found')
+    return
+  }
+  
   canvasContext = canvas.getContext('2d')
   
   // Load original image
   const img = new Image()
   img.onload = () => {
+    console.log('Image loaded, dimensions:', img.width, 'x', img.height)
     canvas.width = img.width
     canvas.height = img.height
     canvasContext.drawImage(img, 0, 0)
     
     // Store original image data
     originalImageData = canvasContext.getImageData(0, 0, canvas.width, canvas.height)
+    console.log('Canvas setup complete')
+  }
+  img.onerror = (error) => {
+    console.error('Error loading image:', error)
   }
   img.src = props.imageDataURL
 }

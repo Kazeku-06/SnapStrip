@@ -42,7 +42,7 @@
       </div>
 
       <!-- Editor Section -->
-      <div v-else>
+      <div v-else-if="finalImage">
         <PhotoEditor
           :image-data-url="finalImage"
           @download="handleEditorDownload"
@@ -135,6 +135,7 @@ const handleStartPhotoshoot = async (settings) => {
     
     // Get final image and go directly to editor
     finalImage.value = getCanvasDataURL()
+    console.log('Final image created:', finalImage.value ? 'Success' : 'Failed')
     
   } catch (err) {
     console.error('Photoshoot failed:', err)
