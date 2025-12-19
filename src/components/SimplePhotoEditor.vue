@@ -7,24 +7,21 @@
     <div class="grid lg:grid-cols-3 gap-6">
       <!-- Canvas Area -->
       <div class="lg:col-span-2">
-        <div class="relative border-2 border-gray-200 rounded-lg overflow-hidden bg-gray-50">
+        <div 
+          class="relative rounded-lg overflow-hidden bg-gray-900 mx-auto"
+          :class="selectedFrame !== 'none' ? 'frame-' + selectedFrame : 'border-2 border-gray-200'"
+          style="width: 400px; height: 600px;"
+        >
           <!-- Base Image -->
           <img 
             v-if="imageDataURL && imageDataURL.startsWith('data:image/')"
             :src="imageDataURL" 
             alt="Photo to edit"
-            class="max-w-full h-auto"
+            class="w-full h-full object-cover"
             :class="{ 'filter-vintage': currentFilter === 'vintage', 'filter-bw': currentFilter === 'bw' }"
             @load="onImageLoad"
             @error="onImageError"
           />
-          
-          <!-- Frame Overlay -->
-          <div 
-            v-if="selectedFrame !== 'none' && imageLoaded"
-            class="absolute inset-0 pointer-events-none frame-overlay"
-            :class="'frame-' + selectedFrame"
-          ></div>
           
           <!-- Draggable Elements -->
           <div
@@ -215,7 +212,7 @@
           </button>
           
           <button
-            @click="$emit('back')"
+            @click="emit('back')"
             class="w-full py-2 border border-gray-300 text-gray-700 rounded hover:bg-gray-50"
           >
             Take New Photos
@@ -417,98 +414,74 @@ const downloadImage = () => {
   filter: grayscale(1) contrast(1.1);
 }
 
-/* Enhanced frame container */
-.relative img {
-  display: block;
-  max-width: 100%;
-  height: auto;
-}
-
-/* Frame overlay base */
-.frame-overlay {
-  border-radius: inherit;
-}
-
-/* Classic Frame */
+/* Frame styles - applied to container, not overlay */
 .frame-classic {
-  border: 12px solid #333;
-  box-shadow: 0 10px 30px rgba(0,0,0,0.3);
+  border: 8px solid #333 !important;
+  box-shadow: 0 8px 25px rgba(0,0,0,0.3);
 }
 
-/* Vintage Frame */
 .frame-vintage {
-  border: 16px solid #8B4513;
-  box-shadow: inset 0 0 20px rgba(139, 69, 19, 0.3), 0 10px 30px rgba(0,0,0,0.4);
+  border: 12px solid #8B4513 !important;
+  box-shadow: 0 8px 25px rgba(0,0,0,0.4);
+  background: linear-gradient(45deg, #8B4513 0%, #A0522D 100%);
+  padding: 4px;
 }
 
-.frame-vintage::before {
-  content: '';
-  position: absolute;
-  inset: -16px;
-  border: 16px solid transparent;
-  background: linear-gradient(45deg, #8B4513 0%, #A0522D 100%) border-box;
-  mask: linear-gradient(#fff 0 0) padding-box, linear-gradient(#fff 0 0);
-  mask-composite: xor;
-  -webkit-mask-composite: xor;
+.frame-vintage img {
+  border-radius: 4px;
 }
 
-/* Modern Frame */
 .frame-modern {
-  border: 8px solid transparent;
-  background: linear-gradient(135deg, #667eea 0%, #764ba2 100%) border-box;
-  mask: linear-gradient(#fff 0 0) padding-box, linear-gradient(#fff 0 0);
-  mask-composite: xor;
-  -webkit-mask-composite: xor;
-  box-shadow: 0 15px 40px rgba(102, 126, 234, 0.4);
+  border: 6px solid transparent !important;
+  background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+  box-shadow: 0 12px 35px rgba(102, 126, 234, 0.4);
+  padding: 6px;
 }
 
-/* Polaroid Frame */
+.frame-modern img {
+  border-radius: 4px;
+}
+
 .frame-polaroid {
-  border: 20px solid white;
-  border-bottom: 60px solid white;
-  box-shadow: 0 10px 40px rgba(0,0,0,0.3);
+  border: 15px solid white !important;
+  border-bottom: 45px solid white !important;
+  box-shadow: 0 8px 35px rgba(0,0,0,0.3);
+  background: white;
 }
 
-/* Neon Frame */
 .frame-neon {
-  border: 6px solid #00ffff;
-  box-shadow: 0 0 20px #00ffff, 0 0 40px #00ffff;
+  border: 4px solid #00ffff !important;
+  box-shadow: 0 0 15px #00ffff, 0 0 30px #00ffff;
   animation: neonGlow 2s ease-in-out infinite alternate;
 }
 
-/* Gold Frame */
 .frame-gold {
-  border: 14px solid #FFD700;
-  box-shadow: 0 0 30px rgba(255,215,0,0.6);
-}
-
-.frame-gold::before {
-  content: '';
-  position: absolute;
-  inset: -14px;
-  border: 14px solid transparent;
-  background: linear-gradient(135deg, #FFD700 0%, #FFA500 100%) border-box;
-  mask: linear-gradient(#fff 0 0) padding-box, linear-gradient(#fff 0 0);
-  mask-composite: xor;
-  -webkit-mask-composite: xor;
+  border: 10px solid #FFD700 !important;
+  box-shadow: 0 0 25px rgba(255,215,0,0.6);
+  background: linear-gradient(135deg, #FFD700 0%, #FFA500 100%);
+  padding: 4px;
   animation: goldShimmer 3s ease-in-out infinite;
 }
 
-/* Film Frame */
-.frame-film {
-  border: 20px solid #1a1a1a;
-  box-shadow: inset 0 0 0 4px #333, 0 10px 30px rgba(0,0,0,0.5);
+.frame-gold img {
+  border-radius: 4px;
 }
 
-.frame-film::before {
-  content: '';
-  position: absolute;
-  inset: -20px;
-  border: 20px solid transparent;
-  background: repeating-linear-gradient(90deg, #1a1a1a 0px, #1a1a1a 10px, #333 10px, #333 20px) border-box;
-  mask: linear-gradient(#fff 0 0) padding-box, linear-gradient(#fff 0 0);
-  mask-composite: xor;
-  -webkit-mask-composite: xor;
+.frame-film {
+  border: 15px solid #1a1a1a !important;
+  box-shadow: 0 8px 25px rgba(0,0,0,0.5);
+  background: repeating-linear-gradient(
+    to right,
+    #1a1a1a 0px,
+    #1a1a1a 8px,
+    #333 8px,
+    #333 16px
+  );
+  padding: 8px;
+}
+
+.frame-film img {
+  border-radius: 4px;
 }
 
 /* Animation for frame selection */
