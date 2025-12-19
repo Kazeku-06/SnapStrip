@@ -1,5 +1,13 @@
 import { ref } from 'vue'
-import { loadImage, calculateLayout, drawTextWithBackground } from '@/utils/canvasHelpers'
+import { 
+  loadImage, 
+  calculateLayout, 
+  drawTextWithBackground,
+  getFrameBackgroundColor,
+  drawFrameBorder,
+  drawImageFrame,
+  getFramePadding
+} from '@/utils/canvasHelpers'
 
 export function usePhotoLayout() {
   const finalCanvas = ref(null)
@@ -17,7 +25,9 @@ export function usePhotoLayout() {
         canvasWidth = 800,
         canvasHeight = 600,
         title = '',
-        showTimestamp = true
+        showTimestamp = true,
+        frameStyle = 'none',
+        frameColor = '#ffffff'
       } = options
 
       // Load all images
@@ -25,8 +35,8 @@ export function usePhotoLayout() {
         images.map(imageData => loadImage(imageData))
       )
 
-      // Calculate layout
-      const layout = calculateLayout(layoutType, loadedImages, canvasWidth, canvasHeight)
+      // Calculate layout with frame style
+      const layout = calculateLayout(layoutType, loadedImages, canvasWidth, canvasHeight, frameStyle)
 
       // Create canvas
       const canvas = document.createElement('canvas')
@@ -34,15 +44,26 @@ export function usePhotoLayout() {
       canvas.height = layout.canvasHeight
       const ctx = canvas.getContext('2d')
 
-      // Fill background
-      ctx.fillStyle = '#ffffff'
+      // Fill background with frame color
+      const bgColor = getFrameBackgroundColor(frameStyle)
+      ctx.fillStyle = bgColor
       ctx.fillRect(0, 0, canvas.width, canvas.height)
+
+      // Draw frame border if needed
+      if (frameStyle !== 'none') {
+        drawFrameBorder(ctx, canvas.width, canvas.height, frameStyle)
+      }
 
       // Draw images
       loadedImages.forEach((img, index) => {
         if (layout.positions[index]) {
           const pos = layout.positions[index]
           ctx.drawImage(img, pos.x, pos.y, pos.width, pos.height)
+          
+          // Add frame around each image if needed
+          if (frameStyle !== 'none') {
+            drawImageFrame(ctx, pos, frameStyle)
+          }
         }
       })
 

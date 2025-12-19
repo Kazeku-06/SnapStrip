@@ -392,10 +392,14 @@ const undoLast = () => {
 
 // Download
 const downloadImage = () => {
-  // For now, just emit the original image
-  // In a full implementation, we'd render everything to canvas first
+  // Emit download with frame and filter information
   console.log('Download clicked with filter:', currentFilter.value, 'frame:', selectedFrame.value)
-  emit('download', props.imageDataURL)
+  emit('download', {
+    imageDataURL: props.imageDataURL,
+    frameStyle: selectedFrame.value,
+    filter: currentFilter.value,
+    overlayElements: overlayElements.value
+  })
 }
 </script>
 <style scoped>

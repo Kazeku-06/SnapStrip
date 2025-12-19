@@ -121,6 +121,7 @@ const { isDownloading, downloadDataURL } = useDownload()
 // State
 const finalImage = ref(null)
 const totalShots = ref(4)
+const storedCapturedImages = ref([])
 
 
 
@@ -134,6 +135,9 @@ const handleStartPhotoshoot = async (settings) => {
     
     // Capture burst photos
     const images = await startBurstCapture(captureFrame, settings.shotCount, 1200)
+    
+    // Store captured images for later use
+    storedCapturedImages.value = [...images]
     
     // Create photo layout
     await createPhotoLayout(images, settings.layout, {
@@ -160,14 +164,69 @@ const handleStartPhotoshoot = async (settings) => {
 
 
 
-const handleEditorDownload = (editedImageDataURL) => {
-  const timestamp = new Date().toISOString().slice(0, 19).replace(/:/g, '-')
-  const filename = `photobooth-edited-${timestamp}.png`
-  downloadDataURL(editedImageDataURL, filename)
+const handleEditorDownload = async (editData) => {
+  try {
+    // If it's just a string (old format), download directly
+    if (typeof editData === 'string') {
+      const timestamp = new Date().toISOString().slice(0, 19).replace(/:/g, '-')
+      const filename = `photobooth-edited-${timestamp}.png`
+      downloadDataURL(editData, filename)
+      return
+    }
+
+    // New format with frame styling - regenerate the layout
+    const { frameStyle, filter, overlayElements } = editData
+    
+    // Get the original captured images (we need to store these)
+    if (storedCapturedImages.value && storedCapturedImages.value.length > 0) {
+      // Recreate photo layout with frame styling
+      await createPhotoLayout(storedCapturedImages.value, 'vertical', {
+        canvasWidth: 600,
+        canvasHeight: 800,
+        title: '',
+        showTimestamp: true,
+        frameStyle: frameStyle,
+        frameColor: getFrameColor(frameStyle)
+      })
+      
+      // Get the new styled image
+      const styledImageData = getCanvasDataURL()
+      
+      // Download the styled image
+      const timestamp = new Date().toISOString().slice(0, 19).replace(/:/g, '-')
+      const filename = `photobooth-styled-${timestamp}.png`
+      downloadDataURL(styledImageData, filename)
+    } else {
+      // Fallback to original image
+      const timestamp = new Date().toISOString().slice(0, 19).replace(/:/g, '-')
+      const filename = `photobooth-edited-${timestamp}.png`
+      downloadDataURL(editData.imageDataURL, filename)
+    }
+  } catch (error) {
+    console.error('Download failed:', error)
+    // Fallback download
+    const timestamp = new Date().toISOString().slice(0, 19).replace(/:/g, '-')
+    const filename = `photobooth-fallback-${timestamp}.png`
+    downloadDataURL(typeof editData === 'string' ? editData : editData.imageDataURL, filename)
+  }
+}
+
+const getFrameColor = (frameStyle) => {
+  switch (frameStyle) {
+    case 'classic': return '#333333'
+    case 'vintage': return '#8B4513'
+    case 'modern': return '#667eea'
+    case 'polaroid': return '#ffffff'
+    case 'neon': return '#001122'
+    case 'gold': return '#FFD700'
+    case 'film': return '#1a1a1a'
+    default: return '#ffffff'
+  }
 }
 
 const resetSession = () => {
   finalImage.value = null
+  storedCapturedImages.value = []
   clearCaptures()
 }
 

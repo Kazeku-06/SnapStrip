@@ -13,15 +13,17 @@ export const loadImage = (src) => {
 /**
  * Calculate layout dimensions and positions
  */
-export const calculateLayout = (layoutType, images, canvasWidth = 800, canvasHeight = 600) => {
+export const calculateLayout = (layoutType, images, canvasWidth = 800, canvasHeight = 600, frameStyle = 'none') => {
   const imageCount = images.length
-  const padding = 20
+  const padding = getFramePadding(frameStyle)
   const textHeight = 60 // Space for timestamp
   
   let layout = {
     canvasWidth,
     canvasHeight: canvasHeight + textHeight,
-    positions: []
+    positions: [],
+    padding: padding,
+    frameStyle: frameStyle
   }
 
   switch (layoutType) {
@@ -90,4 +92,133 @@ export const drawTextWithBackground = (ctx, text, x, y, fontSize = 16) => {
   // Draw text
   ctx.fillStyle = 'white'
   ctx.fillText(text, x, y - 5)
+}
+
+/**
+ * Get frame background color based on frame style
+ */
+export const getFrameBackgroundColor = (frameStyle) => {
+  switch (frameStyle) {
+    case 'classic':
+      return '#333333'
+    case 'vintage':
+      return '#8B4513'
+    case 'modern':
+      return '#667eea'
+    case 'polaroid':
+      return '#ffffff'
+    case 'neon':
+      return '#001122'
+    case 'gold':
+      return '#FFD700'
+    case 'film':
+      return '#1a1a1a'
+    default:
+      return '#ffffff'
+  }
+}
+
+/**
+ * Draw frame border around entire canvas
+ */
+export const drawFrameBorder = (ctx, width, height, frameStyle) => {
+  const borderWidth = getFrameBorderWidth(frameStyle)
+  const borderColor = getFrameBorderColor(frameStyle)
+  
+  ctx.strokeStyle = borderColor
+  ctx.lineWidth = borderWidth
+  ctx.strokeRect(borderWidth/2, borderWidth/2, width - borderWidth, height - borderWidth)
+  
+  // Special effects for certain frames
+  if (frameStyle === 'neon') {
+    ctx.shadowColor = '#00ffff'
+    ctx.shadowBlur = 15
+    ctx.strokeRect(borderWidth/2, borderWidth/2, width - borderWidth, height - borderWidth)
+    ctx.shadowBlur = 0
+  }
+}
+
+/**
+ * Draw frame around individual image
+ */
+export const drawImageFrame = (ctx, position, frameStyle) => {
+  const { x, y, width, height } = position
+  const borderWidth = 2
+  const borderColor = getFrameBorderColor(frameStyle)
+  
+  ctx.strokeStyle = borderColor
+  ctx.lineWidth = borderWidth
+  ctx.strokeRect(x - borderWidth/2, y - borderWidth/2, width + borderWidth, height + borderWidth)
+}
+
+/**
+ * Get frame border width
+ */
+export const getFrameBorderWidth = (frameStyle) => {
+  switch (frameStyle) {
+    case 'classic':
+      return 8
+    case 'vintage':
+      return 12
+    case 'modern':
+      return 6
+    case 'polaroid':
+      return 15
+    case 'neon':
+      return 4
+    case 'gold':
+      return 10
+    case 'film':
+      return 15
+    default:
+      return 0
+  }
+}
+
+/**
+ * Get frame border color
+ */
+export const getFrameBorderColor = (frameStyle) => {
+  switch (frameStyle) {
+    case 'classic':
+      return '#333333'
+    case 'vintage':
+      return '#A0522D'
+    case 'modern':
+      return '#764ba2'
+    case 'polaroid':
+      return '#ffffff'
+    case 'neon':
+      return '#00ffff'
+    case 'gold':
+      return '#FFA500'
+    case 'film':
+      return '#333333'
+    default:
+      return '#000000'
+  }
+}
+
+/**
+ * Get frame padding (spacing between photos)
+ */
+export const getFramePadding = (frameStyle) => {
+  switch (frameStyle) {
+    case 'classic':
+      return 25
+    case 'vintage':
+      return 30
+    case 'modern':
+      return 20
+    case 'polaroid':
+      return 35
+    case 'neon':
+      return 15
+    case 'gold':
+      return 25
+    case 'film':
+      return 30
+    default:
+      return 20
+  }
 }
