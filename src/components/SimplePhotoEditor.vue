@@ -21,9 +21,9 @@
           
           <!-- Frame Overlay -->
           <div 
-            v-if="selectedFrame && imageLoaded"
+            v-if="selectedFrame !== 'none' && imageLoaded"
             class="absolute inset-0 pointer-events-none"
-            :class="frameClasses[selectedFrame]"
+            :style="frameStyles[selectedFrame]"
           ></div>
           
           <!-- Draggable Elements -->
@@ -123,28 +123,13 @@
           <h3 class="font-medium text-gray-800 mb-3">Photo Frames</h3>
           <div class="grid grid-cols-2 gap-2">
             <button
-              @click="selectFrame('none')"
-              :class="['p-2 border rounded text-sm', selectedFrame === 'none' ? 'border-blue-500 bg-blue-50' : 'border-gray-300 hover:bg-gray-50']"
+              v-for="frame in frames"
+              :key="frame.id"
+              @click="selectFrame(frame.id)"
+              :class="['p-3 border rounded-lg text-xs text-center transition-all', selectedFrame === frame.id ? 'border-blue-500 bg-blue-50 text-blue-700' : 'border-gray-300 hover:bg-gray-50 hover:border-gray-400']"
             >
-              No Frame
-            </button>
-            <button
-              @click="selectFrame('vintage')"
-              :class="['p-2 border rounded text-sm', selectedFrame === 'vintage' ? 'border-blue-500 bg-blue-50' : 'border-gray-300 hover:bg-gray-50']"
-            >
-              Vintage
-            </button>
-            <button
-              @click="selectFrame('modern')"
-              :class="['p-2 border rounded text-sm', selectedFrame === 'modern' ? 'border-blue-500 bg-blue-50' : 'border-gray-300 hover:bg-gray-50']"
-            >
-              Modern
-            </button>
-            <button
-              @click="selectFrame('polaroid')"
-              :class="['p-2 border rounded text-sm', selectedFrame === 'polaroid' ? 'border-blue-500 bg-blue-50' : 'border-gray-300 hover:bg-gray-50']"
-            >
-              Polaroid
+              <div class="font-medium">{{ frame.name }}</div>
+              <div class="text-gray-500 mt-1">{{ frame.description }}</div>
             </button>
           </div>
         </div>
@@ -270,11 +255,55 @@ const fontSize = ref(24)
 // Assets
 const stickers = ['😀', '😍', '🎉', '❤️', '⭐', '🌟', '🎈', '🎊', '🔥', '💯', '👍', '✨', '🌈', '🦄', '🎭', '🎪', '🎨', '📸']
 
-// Frame classes
-const frameClasses = {
-  vintage: 'border-8 border-yellow-800 shadow-2xl',
-  modern: 'border-4 border-gradient-to-r from-purple-500 to-pink-500 shadow-xl',
-  polaroid: 'border-white border-8 shadow-2xl bg-white'
+// Frame definitions
+const frames = [
+  { id: 'none', name: 'No Frame', description: 'Original' },
+  { id: 'classic', name: 'Classic', description: 'Simple border' },
+  { id: 'vintage', name: 'Vintage', description: 'Retro style' },
+  { id: 'modern', name: 'Modern', description: 'Gradient' },
+  { id: 'polaroid', name: 'Polaroid', description: 'White frame' },
+  { id: 'neon', name: 'Neon', description: 'Glowing' },
+  { id: 'gold', name: 'Gold', description: 'Luxury' },
+  { id: 'film', name: 'Film Strip', description: 'Cinema' }
+]
+
+// Frame styles
+const frameStyles = {
+  classic: {
+    border: '12px solid #333',
+    boxShadow: '0 10px 30px rgba(0,0,0,0.3)'
+  },
+  vintage: {
+    border: '16px solid #8B4513',
+    boxShadow: 'inset 0 0 20px rgba(0,0,0,0.3), 0 10px 30px rgba(0,0,0,0.4)',
+    background: 'linear-gradient(45deg, #8B4513 0%, #A0522D 100%)'
+  },
+  modern: {
+    border: '8px solid transparent',
+    background: 'linear-gradient(white, white) padding-box, linear-gradient(135deg, #667eea 0%, #764ba2 100%) border-box',
+    boxShadow: '0 15px 40px rgba(102, 126, 234, 0.4)'
+  },
+  polaroid: {
+    border: '20px solid white',
+    borderBottom: '60px solid white',
+    boxShadow: '0 10px 40px rgba(0,0,0,0.3)',
+    background: 'white'
+  },
+  neon: {
+    border: '6px solid #00ffff',
+    boxShadow: '0 0 20px #00ffff, 0 0 40px #00ffff, inset 0 0 20px rgba(0,255,255,0.2)',
+    background: 'rgba(0,255,255,0.1)'
+  },
+  gold: {
+    border: '14px solid #FFD700',
+    boxShadow: '0 0 30px rgba(255,215,0,0.6), inset 0 0 20px rgba(255,215,0,0.3)',
+    background: 'linear-gradient(135deg, #FFD700 0%, #FFA500 100%)'
+  },
+  film: {
+    border: '20px solid #1a1a1a',
+    boxShadow: 'inset 0 0 0 4px #333, 0 10px 30px rgba(0,0,0,0.5)',
+    background: 'repeating-linear-gradient(90deg, #1a1a1a 0px, #1a1a1a 10px, #333 10px, #333 20px)'
+  }
 }
 
 // Event handlers
@@ -343,32 +372,39 @@ const addShape = (shape) => {
 }
 
 // Drag and drop
+let containerRect = null
+
 const startDrag = (element, event) => {
   event.preventDefault()
   selectedElement.value = element
   isDragging.value = true
   
-  const rect = event.currentTarget.parentElement.getBoundingClientRect()
-  dragOffset.x = event.clientX - rect.left - element.x
-  dragOffset.y = event.clientY - rect.top - element.y
+  // Get container bounds
+  const container = event.currentTarget.closest('.relative')
+  containerRect = container.getBoundingClientRect()
+  
+  dragOffset.x = event.clientX - containerRect.left - element.x
+  dragOffset.y = event.clientY - containerRect.top - element.y
   
   document.addEventListener('mousemove', drag)
   document.addEventListener('mouseup', endDrag)
 }
 
 const drag = (event) => {
-  if (!isDragging.value || !selectedElement.value) return
+  if (!isDragging.value || !selectedElement.value || !containerRect) return
   
-  const rect = event.currentTarget?.parentElement?.getBoundingClientRect()
-  if (rect) {
-    selectedElement.value.x = event.clientX - rect.left - dragOffset.x
-    selectedElement.value.y = event.clientY - rect.top - dragOffset.y
-  }
+  const newX = event.clientX - containerRect.left - dragOffset.x
+  const newY = event.clientY - containerRect.top - dragOffset.y
+  
+  // Keep element within bounds
+  selectedElement.value.x = Math.max(0, Math.min(newX, containerRect.width - 50))
+  selectedElement.value.y = Math.max(0, Math.min(newY, containerRect.height - 50))
 }
 
 const endDrag = () => {
   isDragging.value = false
   selectedElement.value = null
+  containerRect = null
   document.removeEventListener('mousemove', drag)
   document.removeEventListener('mouseup', endDrag)
 }
@@ -418,9 +454,32 @@ const downloadImage = () => {
   filter: grayscale(1) contrast(1.1);
 }
 
-/* Frame styles */
-.border-gradient-to-r {
-  background: linear-gradient(to right, #8b5cf6, #ec4899);
-  padding: 4px;
+/* Enhanced frame container */
+.relative img {
+  display: block;
+  max-width: 100%;
+  height: auto;
+}
+
+/* Animation for frame selection */
+button {
+  transition: all 0.2s ease;
+}
+
+button:hover {
+  transform: translateY(-1px);
+}
+
+/* Neon glow animation */
+@keyframes neonGlow {
+  0%, 100% { box-shadow: 0 0 20px #00ffff, 0 0 40px #00ffff, inset 0 0 20px rgba(0,255,255,0.2); }
+  50% { box-shadow: 0 0 30px #00ffff, 0 0 60px #00ffff, inset 0 0 30px rgba(0,255,255,0.3); }
+}
+
+/* Gold shimmer animation */
+@keyframes goldShimmer {
+  0% { background: linear-gradient(135deg, #FFD700 0%, #FFA500 100%); }
+  50% { background: linear-gradient(135deg, #FFA500 0%, #FFD700 100%); }
+  100% { background: linear-gradient(135deg, #FFD700 0%, #FFA500 100%); }
 }
 </style>
