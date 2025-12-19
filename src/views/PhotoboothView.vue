@@ -42,22 +42,20 @@
       </div>
 
       <!-- Editor Section -->
-      <div v-else>
-        <PhotoEditor
-          v-if="finalImage"
-          :key="finalImage"
-          :image-data-url="finalImage"
-          @download="handleEditorDownload"
-          @back="resetSession"
-        />
-
-        <!-- Fallback Loading -->
-        <div v-else class="flex items-center justify-center min-h-96">
+      <div v-else class="w-full">
+        <div v-show="!finalImage" class="flex items-center justify-center min-h-96">
           <div class="text-center">
             <div class="animate-spin rounded-full h-12 w-12 border-b-2 border-blue-600 mx-auto mb-4"></div>
             <p class="text-gray-600">Preparing editor...</p>
           </div>
         </div>
+        
+        <SimplePhotoEditor
+          v-if="finalImage"
+          :imageDataURL="finalImage"
+          @download="handleEditorDownload"
+          @back="resetSession"
+        />
       </div>
 
       <!-- Processing Overlay -->
@@ -83,7 +81,7 @@ import { ref, onMounted } from 'vue'
 import CameraPreview from '@/components/CameraPreview.vue'
 import CountdownOverlay from '@/components/CountdownOverlay.vue'
 import ControlPanel from '@/components/ControlPanel.vue'
-import PhotoEditor from '@/components/PhotoEditor.vue'
+import SimplePhotoEditor from '@/components/SimplePhotoEditor.vue'
 import { useCamera } from '@/composables/useCamera'
 import { useCountdown } from '@/composables/useCountdown'
 import { useBurstCapture } from '@/composables/useBurstCapture'
@@ -150,11 +148,9 @@ const handleStartPhotoshoot = async (settings) => {
     console.log('Canvas data URL:', imageData ? 'Generated' : 'Failed')
     console.log('Image data length:', imageData ? imageData.length : 0)
     
-    // Add small delay to ensure proper reactivity
-    setTimeout(() => {
-      finalImage.value = imageData
-      console.log('Final image set with delay:', finalImage.value ? 'Success' : 'Failed')
-    }, 100)
+    // Set final image directly
+    finalImage.value = imageData
+    console.log('Final image set:', finalImage.value ? 'Success' : 'Failed')
     
   } catch (err) {
     console.error('Photoshoot failed:', err)
