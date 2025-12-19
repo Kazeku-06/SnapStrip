@@ -99,20 +99,18 @@ export const drawTextWithBackground = (ctx, text, x, y, fontSize = 16) => {
  */
 export const getFrameBackgroundColor = (frameStyle) => {
   switch (frameStyle) {
-    case 'classic':
-      return '#333333'
+    case 'cute':
+      return '#ff9a9e'
+    case 'elegant':
+      return '#FFD700'
+    case 'party':
+      return '#ff6b6b'
     case 'vintage':
       return '#8B4513'
-    case 'modern':
-      return '#667eea'
-    case 'polaroid':
-      return '#ffffff'
-    case 'neon':
-      return '#001122'
-    case 'gold':
-      return '#FFD700'
-    case 'film':
-      return '#1a1a1a'
+    case 'galaxy':
+      return '#000428'
+    case 'love':
+      return '#ff9a9e'
     default:
       return '#ffffff'
   }
@@ -180,20 +178,18 @@ export const getFrameBorderWidth = (frameStyle) => {
  */
 export const getFrameBorderColor = (frameStyle) => {
   switch (frameStyle) {
-    case 'classic':
-      return '#333333'
+    case 'cute':
+      return '#fecfef'
+    case 'elegant':
+      return '#FFA500'
+    case 'party':
+      return '#4ecdc4'
     case 'vintage':
       return '#A0522D'
-    case 'modern':
-      return '#764ba2'
-    case 'polaroid':
-      return '#ffffff'
-    case 'neon':
-      return '#00ffff'
-    case 'gold':
-      return '#FFA500'
-    case 'film':
-      return '#333333'
+    case 'galaxy':
+      return '#004e92'
+    case 'love':
+      return '#fad0c4'
     default:
       return '#000000'
   }
@@ -204,21 +200,19 @@ export const getFrameBorderColor = (frameStyle) => {
  */
 export const getFramePadding = (frameStyle) => {
   switch (frameStyle) {
-    case 'classic':
-      return 35  // Increased for more visible spacing
+    case 'cute':
+      return 40  // Extra space for emoji decorations
+    case 'elegant':
+      return 45  // Luxury spacing
+    case 'party':
+      return 35  // Fun spacing
     case 'vintage':
-      return 40  // Increased for more visible spacing
-    case 'modern':
-      return 30  // Increased for more visible spacing
-    case 'polaroid':
-      return 45  // Increased for more visible spacing
-    case 'neon':
-      return 25  // Increased for more visible spacing
-    case 'gold':
-      return 35  // Increased for more visible spacing
-    case 'film':
-      return 40  // Increased for more visible spacing
+      return 40  // Classic spacing
+    case 'galaxy':
+      return 35  // Space theme
+    case 'love':
+      return 40  // Romantic spacing
     default:
-      return 30  // Increased default spacing
+      return 30
   }
 }

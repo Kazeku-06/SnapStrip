@@ -9,7 +9,7 @@
       <div class="lg:col-span-2">
         <div 
           class="relative rounded-lg overflow-hidden bg-gray-900 mx-auto"
-          :class="selectedFrame !== 'none' ? 'frame-' + selectedFrame : 'border-2 border-gray-200'"
+          :class="selectedFrame !== 'none' ? 'frame-' + selectedFrame : 'no-frame'"
           style="width: 400px; height: 600px;"
         >
           <!-- Base Image -->
@@ -118,15 +118,18 @@
         <!-- Frames -->
         <div>
           <h3 class="font-medium text-gray-800 mb-3">Photo Frames</h3>
-          <div class="grid grid-cols-2 gap-2">
+          <div class="grid grid-cols-1 gap-2">
             <button
               v-for="frame in frames"
               :key="frame.id"
               @click="selectFrame(frame.id)"
-              :class="['p-3 border rounded-lg text-xs text-center transition-all', selectedFrame === frame.id ? 'border-blue-500 bg-blue-50 text-blue-700' : 'border-gray-300 hover:bg-gray-50 hover:border-gray-400']"
+              :class="['p-3 border rounded-lg text-sm text-left transition-all flex items-center gap-3', selectedFrame === frame.id ? 'border-blue-500 bg-blue-50 text-blue-700' : 'border-gray-300 hover:bg-gray-50 hover:border-gray-400']"
             >
-              <div class="font-medium">{{ frame.name }}</div>
-              <div class="text-gray-500 mt-1">{{ frame.description }}</div>
+              <div class="text-2xl">{{ frame.emoji }}</div>
+              <div class="flex-1">
+                <div class="font-medium">{{ frame.name }}</div>
+                <div class="text-xs text-gray-500 mt-1">{{ frame.description }}</div>
+              </div>
             </button>
           </div>
         </div>
@@ -256,16 +259,15 @@ const fontSize = ref(24)
 // Assets
 const stickers = ['😀', '😍', '🎉', '❤️', '⭐', '🌟', '🎈', '🎊', '🔥', '💯', '👍', '✨', '🌈', '🦄', '🎭', '🎪', '🎨', '📸']
 
-// Frame definitions
+// Frame definitions - curated selection with emojis
 const frames = [
-  { id: 'none', name: 'No Frame', description: 'Original' },
-  { id: 'classic', name: 'Classic', description: 'Simple border' },
-  { id: 'vintage', name: 'Vintage', description: 'Retro style' },
-  { id: 'modern', name: 'Modern', description: 'Gradient' },
-  { id: 'polaroid', name: 'Polaroid', description: 'White frame' },
-  { id: 'neon', name: 'Neon', description: 'Glowing' },
-  { id: 'gold', name: 'Gold', description: 'Luxury' },
-  { id: 'film', name: 'Film Strip', description: 'Cinema' }
+  { id: 'none', name: 'No Frame', description: 'Original', emoji: '' },
+  { id: 'cute', name: 'Cute Pink', description: '💕 Sweet & Fun', emoji: '💕' },
+  { id: 'elegant', name: 'Elegant Gold', description: '✨ Luxury Style', emoji: '✨' },
+  { id: 'party', name: 'Party Time', description: '🎉 Celebration', emoji: '🎉' },
+  { id: 'vintage', name: 'Vintage Film', description: '📸 Retro Vibes', emoji: '📸' },
+  { id: 'galaxy', name: 'Galaxy Dream', description: '🌌 Space Magic', emoji: '🌌' },
+  { id: 'love', name: 'Love Story', description: '💖 Romance', emoji: '💖' }
 ]
 
 
@@ -424,74 +426,237 @@ const downloadImage = () => {
   filter: grayscale(1) contrast(1.1);
 }
 
-/* Frame styles - applied to container, not overlay */
-.frame-classic {
-  border: 8px solid #333 !important;
-  box-shadow: 0 8px 25px rgba(0,0,0,0.3);
+/* No Frame Style */
+.no-frame {
+  border: 2px solid #e5e7eb;
+  background: #f9fafb;
 }
 
+/* Cute Pink Frame */
+.frame-cute {
+  border: none !important;
+  background: linear-gradient(135deg, #ff9a9e 0%, #fecfef 50%, #fecfef 100%);
+  box-shadow: 0 0 30px rgba(255, 182, 193, 0.6);
+  padding: 12px;
+  position: relative;
+}
+
+.frame-cute img {
+  border-radius: 12px;
+}
+
+.frame-cute::before {
+  content: '💕 💖 💕 💖 💕 💖 💕 💖 💕 💖 💕 💖';
+  position: absolute;
+  top: 2px;
+  left: 0;
+  right: 0;
+  text-align: center;
+  font-size: 14px;
+  line-height: 1;
+  z-index: 10;
+}
+
+.frame-cute::after {
+  content: '💕 💖 💕 💖 💕 💖 💕 💖 💕 💖 💕 💖';
+  position: absolute;
+  bottom: 2px;
+  left: 0;
+  right: 0;
+  text-align: center;
+  font-size: 14px;
+  line-height: 1;
+  z-index: 10;
+}
+
+/* Elegant Gold Frame */
+.frame-elegant {
+  border: none !important;
+  background: linear-gradient(135deg, #FFD700 0%, #FFA500 50%, #FFD700 100%);
+  box-shadow: 0 0 40px rgba(255, 215, 0, 0.8), inset 0 0 20px rgba(255, 255, 255, 0.3);
+  padding: 15px;
+  position: relative;
+  animation: elegantShimmer 4s ease-in-out infinite;
+}
+
+.frame-elegant img {
+  border-radius: 8px;
+}
+
+.frame-elegant::before {
+  content: '✨ 👑 ✨ 💎 ✨ 👑 ✨ 💎 ✨ 👑 ✨';
+  position: absolute;
+  top: 2px;
+  left: 0;
+  right: 0;
+  text-align: center;
+  font-size: 16px;
+  line-height: 1;
+  z-index: 10;
+}
+
+.frame-elegant::after {
+  content: '✨ 👑 ✨ 💎 ✨ 👑 ✨ 💎 ✨ 👑 ✨';
+  position: absolute;
+  bottom: 2px;
+  left: 0;
+  right: 0;
+  text-align: center;
+  font-size: 16px;
+  line-height: 1;
+  z-index: 10;
+}
+
+/* Party Time Frame */
+.frame-party {
+  border: none !important;
+  background: linear-gradient(45deg, #ff6b6b 0%, #4ecdc4 25%, #45b7d1 50%, #96ceb4 75%, #ffeaa7 100%);
+  box-shadow: 0 0 35px rgba(255, 107, 107, 0.6);
+  padding: 10px;
+  position: relative;
+  animation: partyPulse 2s ease-in-out infinite;
+}
+
+.frame-party img {
+  border-radius: 10px;
+}
+
+.frame-party::before {
+  content: '🎉 🎊 🎈 🎁 🎉 🎊 🎈 🎁 🎉 🎊';
+  position: absolute;
+  top: 2px;
+  left: 0;
+  right: 0;
+  text-align: center;
+  font-size: 15px;
+  line-height: 1;
+  z-index: 10;
+}
+
+.frame-party::after {
+  content: '🎉 🎊 🎈 🎁 🎉 🎊 🎈 🎁 🎉 🎊';
+  position: absolute;
+  bottom: 2px;
+  left: 0;
+  right: 0;
+  text-align: center;
+  font-size: 15px;
+  line-height: 1;
+  z-index: 10;
+}
+
+/* Vintage Film Frame */
 .frame-vintage {
-  border: 12px solid #8B4513 !important;
-  box-shadow: 0 8px 25px rgba(0,0,0,0.4);
-  background: linear-gradient(45deg, #8B4513 0%, #A0522D 100%);
-  padding: 4px;
+  border: none !important;
+  background: linear-gradient(90deg, #654321 0%, #8B4513 50%, #654321 100%);
+  box-shadow: inset 0 0 20px rgba(0, 0, 0, 0.4), 0 8px 25px rgba(0, 0, 0, 0.5);
+  padding: 15px;
+  position: relative;
 }
 
 .frame-vintage img {
-  border-radius: 4px;
+  border-radius: 6px;
+  filter: sepia(0.3);
 }
 
-.frame-modern {
-  border: 6px solid transparent !important;
-  background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
-  box-shadow: 0 12px 35px rgba(102, 126, 234, 0.4);
-  padding: 6px;
+.frame-vintage::before {
+  content: '📸 🎞️ 📷 🎬 📸 🎞️ 📷 🎬 📸';
+  position: absolute;
+  top: 3px;
+  left: 0;
+  right: 0;
+  text-align: center;
+  font-size: 16px;
+  line-height: 1;
+  z-index: 10;
 }
 
-.frame-modern img {
-  border-radius: 4px;
+.frame-vintage::after {
+  content: '📸 🎞️ 📷 🎬 📸 🎞️ 📷 🎬 📸';
+  position: absolute;
+  bottom: 3px;
+  left: 0;
+  right: 0;
+  text-align: center;
+  font-size: 16px;
+  line-height: 1;
+  z-index: 10;
 }
 
-.frame-polaroid {
-  border: 15px solid white !important;
-  border-bottom: 45px solid white !important;
-  box-shadow: 0 8px 35px rgba(0,0,0,0.3);
-  background: white;
+/* Galaxy Dream Frame */
+.frame-galaxy {
+  border: none !important;
+  background: linear-gradient(135deg, #000428 0%, #004e92 25%, #1a1a2e 50%, #16213e 75%, #0f3460 100%);
+  box-shadow: 0 0 50px rgba(0, 100, 255, 0.8), inset 0 0 30px rgba(255, 255, 255, 0.1);
+  padding: 12px;
+  position: relative;
+  animation: galaxyGlow 4s ease-in-out infinite;
 }
 
-.frame-neon {
-  border: 4px solid #00ffff !important;
-  box-shadow: 0 0 15px #00ffff, 0 0 30px #00ffff;
-  animation: neonGlow 2s ease-in-out infinite alternate;
+.frame-galaxy img {
+  border-radius: 8px;
 }
 
-.frame-gold {
-  border: 10px solid #FFD700 !important;
-  box-shadow: 0 0 25px rgba(255,215,0,0.6);
-  background: linear-gradient(135deg, #FFD700 0%, #FFA500 100%);
-  padding: 4px;
-  animation: goldShimmer 3s ease-in-out infinite;
+.frame-galaxy::before {
+  content: '🌌 ⭐ 🌟 🚀 🌌 ⭐ 🌟 🚀 🌌';
+  position: absolute;
+  top: 2px;
+  left: 0;
+  right: 0;
+  text-align: center;
+  font-size: 15px;
+  line-height: 1;
+  z-index: 10;
 }
 
-.frame-gold img {
-  border-radius: 4px;
+.frame-galaxy::after {
+  content: '🌌 ⭐ 🌟 🚀 🌌 ⭐ 🌟 🚀 🌌';
+  position: absolute;
+  bottom: 2px;
+  left: 0;
+  right: 0;
+  text-align: center;
+  font-size: 15px;
+  line-height: 1;
+  z-index: 10;
 }
 
-.frame-film {
-  border: 15px solid #1a1a1a !important;
-  box-shadow: 0 8px 25px rgba(0,0,0,0.5);
-  background: repeating-linear-gradient(
-    to right,
-    #1a1a1a 0px,
-    #1a1a1a 8px,
-    #333 8px,
-    #333 16px
-  );
-  padding: 8px;
+/* Love Story Frame */
+.frame-love {
+  border: none !important;
+  background: linear-gradient(135deg, #ff9a9e 0%, #fad0c4 50%, #ff9a9e 100%);
+  box-shadow: 0 0 35px rgba(255, 154, 158, 0.7);
+  padding: 12px;
+  position: relative;
+  animation: loveGlow 3s ease-in-out infinite;
 }
 
-.frame-film img {
-  border-radius: 4px;
+.frame-love img {
+  border-radius: 12px;
+}
+
+.frame-love::before {
+  content: '💖 💕 💗 💓 💖 💕 💗 💓 💖 💕';
+  position: absolute;
+  top: 2px;
+  left: 0;
+  right: 0;
+  text-align: center;
+  font-size: 14px;
+  line-height: 1;
+  z-index: 10;
+}
+
+.frame-love::after {
+  content: '💖 💕 💗 💓 💖 💕 💗 💓 💖 💕';
+  position: absolute;
+  bottom: 2px;
+  left: 0;
+  right: 0;
+  text-align: center;
+  font-size: 14px;
+  line-height: 1;
+  z-index: 10;
 }
 
 /* Animation for frame selection */
@@ -503,26 +668,48 @@ button:hover {
   transform: translateY(-1px);
 }
 
-/* Neon glow animation */
-@keyframes neonGlow {
+/* Elegant shimmer animation */
+@keyframes elegantShimmer {
   0%, 100% { 
-    box-shadow: 0 0 20px #00ffff, 0 0 40px #00ffff;
+    box-shadow: 0 0 40px rgba(255, 215, 0, 0.8), inset 0 0 20px rgba(255, 255, 255, 0.3);
   }
   50% { 
-    box-shadow: 0 0 30px #00ffff, 0 0 60px #00ffff;
+    box-shadow: 0 0 60px rgba(255, 165, 0, 0.9), inset 0 0 30px rgba(255, 255, 255, 0.4);
   }
 }
 
-/* Gold shimmer animation */
-@keyframes goldShimmer {
-  0% { 
-    background: linear-gradient(135deg, #FFD700 0%, #FFA500 100%) border-box;
+/* Party pulse animation */
+@keyframes partyPulse {
+  0%, 100% { 
+    box-shadow: 0 0 35px rgba(255, 107, 107, 0.6);
+    transform: scale(1);
   }
   50% { 
-    background: linear-gradient(135deg, #FFA500 0%, #FFD700 100%) border-box;
+    box-shadow: 0 0 50px rgba(76, 205, 196, 0.8);
+    transform: scale(1.02);
   }
-  100% { 
-    background: linear-gradient(135deg, #FFD700 0%, #FFA500 100%) border-box;
+}
+
+/* Galaxy glow animation */
+@keyframes galaxyGlow {
+  0%, 100% { 
+    box-shadow: 0 0 50px rgba(0, 100, 255, 0.8), inset 0 0 30px rgba(255, 255, 255, 0.1);
+  }
+  33% { 
+    box-shadow: 0 0 60px rgba(138, 43, 226, 0.9), inset 0 0 40px rgba(255, 255, 255, 0.2);
+  }
+  66% { 
+    box-shadow: 0 0 55px rgba(255, 20, 147, 0.7), inset 0 0 35px rgba(255, 255, 255, 0.15);
+  }
+}
+
+/* Love glow animation */
+@keyframes loveGlow {
+  0%, 100% { 
+    box-shadow: 0 0 35px rgba(255, 154, 158, 0.7);
+  }
+  50% { 
+    box-shadow: 0 0 50px rgba(250, 208, 196, 0.9);
   }
 }
 </style>

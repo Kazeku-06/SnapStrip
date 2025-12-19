@@ -239,13 +239,12 @@ const handleFrameChanged = async (frameStyle) => {
 
 const getFrameColor = (frameStyle) => {
   switch (frameStyle) {
-    case 'classic': return '#333333'
+    case 'cute': return '#ff9a9e'
+    case 'elegant': return '#FFD700'
+    case 'party': return '#ff6b6b'
     case 'vintage': return '#8B4513'
-    case 'modern': return '#667eea'
-    case 'polaroid': return '#ffffff'
-    case 'neon': return '#001122'
-    case 'gold': return '#FFD700'
-    case 'film': return '#1a1a1a'
+    case 'galaxy': return '#000428'
+    case 'love': return '#ff9a9e'
     default: return '#ffffff'
   }
 }
