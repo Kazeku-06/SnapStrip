@@ -22,8 +22,8 @@
           <!-- Frame Overlay -->
           <div 
             v-if="selectedFrame !== 'none' && imageLoaded"
-            class="absolute inset-0 pointer-events-none"
-            :style="frameStyles[selectedFrame]"
+            class="absolute inset-0 pointer-events-none frame-overlay"
+            :class="'frame-' + selectedFrame"
           ></div>
           
           <!-- Draggable Elements -->
@@ -267,44 +267,7 @@ const frames = [
   { id: 'film', name: 'Film Strip', description: 'Cinema' }
 ]
 
-// Frame styles
-const frameStyles = {
-  classic: {
-    border: '12px solid #333',
-    boxShadow: '0 10px 30px rgba(0,0,0,0.3)'
-  },
-  vintage: {
-    border: '16px solid #8B4513',
-    boxShadow: 'inset 0 0 20px rgba(0,0,0,0.3), 0 10px 30px rgba(0,0,0,0.4)',
-    background: 'linear-gradient(45deg, #8B4513 0%, #A0522D 100%)'
-  },
-  modern: {
-    border: '8px solid transparent',
-    background: 'linear-gradient(white, white) padding-box, linear-gradient(135deg, #667eea 0%, #764ba2 100%) border-box',
-    boxShadow: '0 15px 40px rgba(102, 126, 234, 0.4)'
-  },
-  polaroid: {
-    border: '20px solid white',
-    borderBottom: '60px solid white',
-    boxShadow: '0 10px 40px rgba(0,0,0,0.3)',
-    background: 'white'
-  },
-  neon: {
-    border: '6px solid #00ffff',
-    boxShadow: '0 0 20px #00ffff, 0 0 40px #00ffff, inset 0 0 20px rgba(0,255,255,0.2)',
-    background: 'rgba(0,255,255,0.1)'
-  },
-  gold: {
-    border: '14px solid #FFD700',
-    boxShadow: '0 0 30px rgba(255,215,0,0.6), inset 0 0 20px rgba(255,215,0,0.3)',
-    background: 'linear-gradient(135deg, #FFD700 0%, #FFA500 100%)'
-  },
-  film: {
-    border: '20px solid #1a1a1a',
-    boxShadow: 'inset 0 0 0 4px #333, 0 10px 30px rgba(0,0,0,0.5)',
-    background: 'repeating-linear-gradient(90deg, #1a1a1a 0px, #1a1a1a 10px, #333 10px, #333 20px)'
-  }
-}
+
 
 // Event handlers
 const onImageLoad = () => {
@@ -461,6 +424,93 @@ const downloadImage = () => {
   height: auto;
 }
 
+/* Frame overlay base */
+.frame-overlay {
+  border-radius: inherit;
+}
+
+/* Classic Frame */
+.frame-classic {
+  border: 12px solid #333;
+  box-shadow: 0 10px 30px rgba(0,0,0,0.3);
+}
+
+/* Vintage Frame */
+.frame-vintage {
+  border: 16px solid #8B4513;
+  box-shadow: inset 0 0 20px rgba(139, 69, 19, 0.3), 0 10px 30px rgba(0,0,0,0.4);
+}
+
+.frame-vintage::before {
+  content: '';
+  position: absolute;
+  inset: -16px;
+  border: 16px solid transparent;
+  background: linear-gradient(45deg, #8B4513 0%, #A0522D 100%) border-box;
+  mask: linear-gradient(#fff 0 0) padding-box, linear-gradient(#fff 0 0);
+  mask-composite: xor;
+  -webkit-mask-composite: xor;
+}
+
+/* Modern Frame */
+.frame-modern {
+  border: 8px solid transparent;
+  background: linear-gradient(135deg, #667eea 0%, #764ba2 100%) border-box;
+  mask: linear-gradient(#fff 0 0) padding-box, linear-gradient(#fff 0 0);
+  mask-composite: xor;
+  -webkit-mask-composite: xor;
+  box-shadow: 0 15px 40px rgba(102, 126, 234, 0.4);
+}
+
+/* Polaroid Frame */
+.frame-polaroid {
+  border: 20px solid white;
+  border-bottom: 60px solid white;
+  box-shadow: 0 10px 40px rgba(0,0,0,0.3);
+}
+
+/* Neon Frame */
+.frame-neon {
+  border: 6px solid #00ffff;
+  box-shadow: 0 0 20px #00ffff, 0 0 40px #00ffff;
+  animation: neonGlow 2s ease-in-out infinite alternate;
+}
+
+/* Gold Frame */
+.frame-gold {
+  border: 14px solid #FFD700;
+  box-shadow: 0 0 30px rgba(255,215,0,0.6);
+}
+
+.frame-gold::before {
+  content: '';
+  position: absolute;
+  inset: -14px;
+  border: 14px solid transparent;
+  background: linear-gradient(135deg, #FFD700 0%, #FFA500 100%) border-box;
+  mask: linear-gradient(#fff 0 0) padding-box, linear-gradient(#fff 0 0);
+  mask-composite: xor;
+  -webkit-mask-composite: xor;
+  animation: goldShimmer 3s ease-in-out infinite;
+}
+
+/* Film Frame */
+.frame-film {
+  border: 20px solid #1a1a1a;
+  box-shadow: inset 0 0 0 4px #333, 0 10px 30px rgba(0,0,0,0.5);
+}
+
+.frame-film::before {
+  content: '';
+  position: absolute;
+  inset: -20px;
+  border: 20px solid transparent;
+  background: repeating-linear-gradient(90deg, #1a1a1a 0px, #1a1a1a 10px, #333 10px, #333 20px) border-box;
+  mask: linear-gradient(#fff 0 0) padding-box, linear-gradient(#fff 0 0);
+  mask-composite: xor;
+  -webkit-mask-composite: xor;
+}
+
 /* Animation for frame selection */
 button {
   transition: all 0.2s ease;
@@ -472,14 +522,24 @@ button:hover {
 
 /* Neon glow animation */
 @keyframes neonGlow {
-  0%, 100% { box-shadow: 0 0 20px #00ffff, 0 0 40px #00ffff, inset 0 0 20px rgba(0,255,255,0.2); }
-  50% { box-shadow: 0 0 30px #00ffff, 0 0 60px #00ffff, inset 0 0 30px rgba(0,255,255,0.3); }
+  0%, 100% { 
+    box-shadow: 0 0 20px #00ffff, 0 0 40px #00ffff;
+  }
+  50% { 
+    box-shadow: 0 0 30px #00ffff, 0 0 60px #00ffff;
+  }
 }
 
 /* Gold shimmer animation */
 @keyframes goldShimmer {
-  0% { background: linear-gradient(135deg, #FFD700 0%, #FFA500 100%); }
-  50% { background: linear-gradient(135deg, #FFA500 0%, #FFD700 100%); }
-  100% { background: linear-gradient(135deg, #FFD700 0%, #FFA500 100%); }
+  0% { 
+    background: linear-gradient(135deg, #FFD700 0%, #FFA500 100%) border-box;
+  }
+  50% { 
+    background: linear-gradient(135deg, #FFA500 0%, #FFD700 100%) border-box;
+  }
+  100% { 
+    background: linear-gradient(135deg, #FFD700 0%, #FFA500 100%) border-box;
+  }
 }
 </style>
