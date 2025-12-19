@@ -53,8 +53,10 @@
         <SimplePhotoEditor
           v-if="finalImage"
           :imageDataURL="finalImage"
+          :capturedImages="storedCapturedImages"
           @download="handleEditorDownload"
           @back="resetSession"
+          @frameChanged="handleFrameChanged"
         />
       </div>
 
@@ -139,12 +141,14 @@ const handleStartPhotoshoot = async (settings) => {
     // Store captured images for later use
     storedCapturedImages.value = [...images]
     
-    // Create photo layout
+    // Create photo layout with no frame initially
     await createPhotoLayout(images, settings.layout, {
       canvasWidth: 600,
       canvasHeight: 800,
       title: settings.title,
-      showTimestamp: true
+      showTimestamp: true,
+      frameStyle: 'none', // No frame initially, user can select in editor
+      frameColor: '#ffffff'
     })
     
     // Get final image and go directly to editor
@@ -208,6 +212,28 @@ const handleEditorDownload = async (editData) => {
     const timestamp = new Date().toISOString().slice(0, 19).replace(/:/g, '-')
     const filename = `photobooth-fallback-${timestamp}.png`
     downloadDataURL(typeof editData === 'string' ? editData : editData.imageDataURL, filename)
+  }
+}
+
+const handleFrameChanged = async (frameStyle) => {
+  try {
+    if (storedCapturedImages.value && storedCapturedImages.value.length > 0) {
+      // Regenerate photo layout with new frame style
+      await createPhotoLayout(storedCapturedImages.value, 'vertical', {
+        canvasWidth: 600,
+        canvasHeight: 800,
+        title: '',
+        showTimestamp: true,
+        frameStyle: frameStyle,
+        frameColor: getFrameColor(frameStyle)
+      })
+      
+      // Update the displayed image
+      const newImageData = getCanvasDataURL()
+      finalImage.value = newImageData
+    }
+  } catch (error) {
+    console.error('Frame change failed:', error)
   }
 }
 

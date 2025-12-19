@@ -205,20 +205,20 @@ export const getFrameBorderColor = (frameStyle) => {
 export const getFramePadding = (frameStyle) => {
   switch (frameStyle) {
     case 'classic':
-      return 25
+      return 35  // Increased for more visible spacing
     case 'vintage':
-      return 30
+      return 40  // Increased for more visible spacing
     case 'modern':
-      return 20
+      return 30  // Increased for more visible spacing
     case 'polaroid':
-      return 35
+      return 45  // Increased for more visible spacing
     case 'neon':
-      return 15
+      return 25  // Increased for more visible spacing
     case 'gold':
-      return 25
+      return 35  // Increased for more visible spacing
     case 'film':
-      return 30
+      return 40  // Increased for more visible spacing
     default:
-      return 20
+      return 30  // Increased default spacing
   }
 }

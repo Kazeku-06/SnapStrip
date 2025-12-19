@@ -230,10 +230,14 @@ const props = defineProps({
   imageDataURL: {
     type: String,
     required: true
+  },
+  capturedImages: {
+    type: Array,
+    default: () => []
   }
 })
 
-const emit = defineEmits(['download', 'back'])
+const emit = defineEmits(['download', 'back', 'frameChanged'])
 
 // State
 const imageLoaded = ref(false)
@@ -376,6 +380,8 @@ const applyFilter = (filterType) => {
 
 const selectFrame = (frameType) => {
   selectedFrame.value = frameType
+  // Emit frame change to regenerate layout with new frame colors
+  emit('frameChanged', frameType)
 }
 
 // Utility functions
