@@ -102,7 +102,7 @@
             @download="handleEditorDownload"
             @back="resetSession"
             @frameChanged="handleFrameChanged"
-            @filterChanged="handleFilterChanged"
+            @retake="handleRetakePhotos"
           />
         </div>
       </div>
@@ -185,6 +185,7 @@ const handleStartPhotoshoot = async (settings) => {
   try {
     totalShots.value = settings.shotCount
     originalLayout.value = settings.layout // Store the original layout
+    currentFilter.value = settings.filter // Store the selected filter
     
     // No initial countdown - each photo will have its own countdown
     
@@ -199,13 +200,14 @@ const handleStartPhotoshoot = async (settings) => {
       ? { canvasWidth: 800, canvasHeight: 800 } // Square for grid
       : { canvasWidth: 600, canvasHeight: 800 } // Portrait for strip
     
-    // Create photo layout with no frame initially
+    // Create photo layout with selected filter applied
     await createPhotoLayout(images, settings.layout, {
       ...canvasConfig,
       title: settings.title,
       showTimestamp: true,
       frameStyle: 'none', // No frame initially, user can select in editor
-      frameColor: '#ffffff'
+      frameColor: '#ffffff',
+      filter: settings.filter // Apply the pre-selected filter
     })
     
     // Get final image and go directly to editor
@@ -276,34 +278,6 @@ const handleFrameChanged = async (frameStyle) => {
   }
 }
 
-const handleFilterChanged = async (filterType) => {
-  try {
-    currentFilter.value = filterType
-    if (storedCapturedImages.value && storedCapturedImages.value.length > 0) {
-      // Adjust canvas dimensions based on original layout
-      const canvasConfig = originalLayout.value === 'grid' 
-        ? { canvasWidth: 800, canvasHeight: 800 } // Square for grid
-        : { canvasWidth: 600, canvasHeight: 800 } // Portrait for strip
-      
-      // Regenerate photo layout with current frame and new filter using ORIGINAL layout
-      await createPhotoLayout(storedCapturedImages.value, originalLayout.value, {
-        ...canvasConfig,
-        title: '',
-        showTimestamp: true,
-        frameStyle: currentFrameStyle.value,
-        frameColor: getFrameColor(currentFrameStyle.value),
-        filter: filterType
-      })
-      
-      // Update the displayed image
-      const newImageData = getCanvasDataURL()
-      finalImage.value = newImageData
-    }
-  } catch (error) {
-    console.error('Filter change failed:', error)
-  }
-}
-
 const getFrameColor = (frameStyle) => {
   switch (frameStyle) {
     case 'cute': return '#ff9a9e'
@@ -315,6 +289,14 @@ const getFrameColor = (frameStyle) => {
     case 'custom': return '#ff6b6b'
     default: return '#ffffff'
   }
+}
+
+const handleRetakePhotos = () => {
+  // Keep the same settings but clear the final image to go back to camera
+  finalImage.value = null
+  storedCapturedImages.value = []
+  currentFrameStyle.value = 'none'
+  clearCaptures()
 }
 
 const resetSession = () => {

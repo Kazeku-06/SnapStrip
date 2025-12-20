@@ -1,10 +1,34 @@
 <template>
   <div class="space-y-8">
+    <!-- Filter Selection - Moved to top -->
+    <div>
+      <label class="block text-lg font-semibold text-white mb-4 flex items-center gap-2">
+        <span class="text-xl">🎨</span>
+        Step 1: Choose Filter
+      </label>
+      <div class="grid grid-cols-3 gap-3">
+        <button
+          v-for="filter in filterOptions"
+          :key="filter.value"
+          @click="selectedFilter = filter.value"
+          :class="[
+            'p-4 border-2 rounded-2xl text-center transition-all duration-300',
+            selectedFilter === filter.value
+              ? 'border-slate-400 bg-slate-700/50 text-white shadow-lg'
+              : 'border-slate-600/50 bg-slate-800/30 text-gray-300 hover:border-slate-500 hover:bg-slate-700/30'
+          ]"
+        >
+          <div class="text-2xl mb-2">{{ filter.emoji }}</div>
+          <div class="text-sm font-medium">{{ filter.name }}</div>
+        </button>
+      </div>
+    </div>
+
     <!-- Layout Selection -->
     <div>
       <label class="block text-lg font-semibold text-white mb-4 flex items-center gap-2">
         <span class="text-xl">🎭</span>
-        Choose Your Style
+        Step 2: Choose Your Style
       </label>
       <div class="grid grid-cols-1 gap-4">
         <button
@@ -38,7 +62,7 @@
     <div>
       <label class="block text-lg font-semibold text-white mb-4 flex items-center gap-2">
         <span class="text-xl">🏷️</span>
-        Event Title (Optional)
+        Step 3: Event Title (Optional)
       </label>
       <input
         v-model="eventTitle"
@@ -121,7 +145,14 @@ const props = defineProps({
 const emit = defineEmits(['start-photoshoot', 'new-session'])
 
 const selectedLayout = ref('vertical')
+const selectedFilter = ref('none')
 const eventTitle = ref('')
+
+const filterOptions = [
+  { value: 'none', name: 'Original', emoji: '📷' },
+  { value: 'vintage', name: 'Vintage', emoji: '📸' },
+  { value: 'bw', name: 'B&W', emoji: '⚫' }
+]
 
 const layoutOptions = [
   {
@@ -147,7 +178,8 @@ const startPhotoshoot = () => {
   emit('start-photoshoot', {
     layout: selectedLayout.value,
     shotCount: shotCount.value,
-    title: eventTitle.value.trim()
+    title: eventTitle.value.trim(),
+    filter: selectedFilter.value
   })
 }
 </script>
