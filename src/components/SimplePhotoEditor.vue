@@ -1,150 +1,159 @@
 <template>
-  <div class="bg-white rounded-lg shadow-lg p-6 max-w-6xl mx-auto">
-    <h2 class="text-2xl font-semibold text-gray-800 mb-4 text-center">
-      Customize Your Photo Strip
-    </h2>
-
-    <div class="grid lg:grid-cols-3 gap-6">
+  <div class="space-y-8">
+    <div class="grid lg:grid-cols-3 gap-8">
       <!-- Canvas Area -->
       <div class="lg:col-span-2">
-        <div 
-          class="relative rounded-lg overflow-hidden bg-gray-900 mx-auto"
-          :class="selectedFrame !== 'none' ? 'frame-' + selectedFrame : 'no-frame'"
-          style="width: 400px; height: 600px;"
-        >
-          <!-- Base Image with Filter Wrapper -->
-          <div class="w-full h-full relative">
-            <img 
-              v-if="imageDataURL && imageDataURL.startsWith('data:image/')"
-              :src="imageDataURL" 
-              alt="Photo to edit"
-              class="w-full h-full object-cover"
-              :class="{ 'filter-vintage': currentFilter === 'vintage', 'filter-bw': currentFilter === 'bw' }"
-              @load="onImageLoad"
-              @error="onImageError"
-            />
-          </div>
-          
-          <!-- Draggable Elements -->
-          <div
-            v-for="element in overlayElements"
-            :key="element.id"
-            :style="{
-              position: 'absolute',
-              left: element.x + 'px',
-              top: element.y + 'px',
-              transform: `scale(${element.scale}) rotate(${element.rotation}deg)`,
-              zIndex: element.zIndex,
-              cursor: 'move'
-            }"
-            @mousedown="startDrag(element, $event)"
-            class="select-none"
+        <div class="bg-white/5 backdrop-blur-sm rounded-2xl p-6 border border-white/10">
+          <h3 class="text-xl font-semibold text-white mb-4 flex items-center gap-2">
+            <span class="text-2xl">🖼️</span>
+            Your Photo Strip
+          </h3>
+          <div 
+            class="relative rounded-2xl overflow-hidden bg-gray-900 mx-auto shadow-2xl"
+            :class="selectedFrame !== 'none' ? 'frame-' + selectedFrame : 'no-frame'"
+            :style="props.layout === 'grid' ? 'width: 400px; height: 400px;' : 'width: 400px; height: 600px;'"
           >
-            <!-- Text Element -->
-            <div
-              v-if="element.type === 'text'"
-              :style="{
-                fontSize: element.fontSize + 'px',
-                color: element.color,
-                fontFamily: element.fontFamily,
-                textShadow: element.shadow ? '2px 2px 4px rgba(0,0,0,0.5)' : 'none'
-              }"
-              class="whitespace-nowrap font-bold"
-            >
-              {{ element.content }}
+            <!-- Base Image with Filter Wrapper -->
+            <div class="w-full h-full relative">
+              <img 
+                v-if="imageDataURL && imageDataURL.startsWith('data:image/')"
+                :src="imageDataURL" 
+                alt="Photo to edit"
+                class="w-full h-full object-cover"
+                :class="{ 'filter-vintage': currentFilter === 'vintage', 'filter-bw': currentFilter === 'bw' }"
+                @load="onImageLoad"
+                @error="onImageError"
+              />
             </div>
             
-            <!-- Sticker Element -->
+            <!-- Draggable Elements -->
             <div
-              v-else-if="element.type === 'sticker'"
-              :style="{ fontSize: element.size + 'px' }"
-            >
-              {{ element.content }}
-            </div>
-            
-            <!-- Shape Element -->
-            <div
-              v-else-if="element.type === 'shape'"
+              v-for="element in overlayElements"
+              :key="element.id"
               :style="{
-                width: element.width + 'px',
-                height: element.height + 'px',
-                backgroundColor: element.color,
-                borderRadius: element.shape === 'circle' ? '50%' : '0'
+                position: 'absolute',
+                left: element.x + 'px',
+                top: element.y + 'px',
+                transform: `scale(${element.scale}) rotate(${element.rotation}deg)`,
+                zIndex: element.zIndex,
+                cursor: 'move'
               }"
-            ></div>
-          </div>
-        </div>
-        
-        <!-- Canvas Controls -->
-        <div class="mt-4 flex justify-between items-center">
-          <div class="flex gap-2">
-            <button
-              @click="clearOverlays"
-              class="px-3 py-1 text-sm bg-red-100 text-red-700 rounded hover:bg-red-200"
+              @mousedown="startDrag(element, $event)"
+              class="select-none"
             >
-              Clear All
-            </button>
-            <button
-              @click="undoLast"
-              class="px-3 py-1 text-sm bg-gray-100 text-gray-700 rounded hover:bg-gray-200"
-            >
-              Undo
-            </button>
+              <!-- Text Element -->
+              <div
+                v-if="element.type === 'text'"
+                :style="{
+                  fontSize: element.fontSize + 'px',
+                  color: element.color,
+                  fontFamily: element.fontFamily,
+                  textShadow: element.shadow ? '2px 2px 4px rgba(0,0,0,0.5)' : 'none'
+                }"
+                class="whitespace-nowrap font-bold"
+              >
+                {{ element.content }}
+              </div>
+              
+              <!-- Sticker Element -->
+              <div
+                v-else-if="element.type === 'sticker'"
+                :style="{ fontSize: element.size + 'px' }"
+              >
+                {{ element.content }}
+              </div>
+              
+              <!-- Shape Element -->
+              <div
+                v-else-if="element.type === 'shape'"
+                :style="{
+                  width: element.width + 'px',
+                  height: element.height + 'px',
+                  backgroundColor: element.color,
+                  borderRadius: element.shape === 'circle' ? '50%' : '0'
+                }"
+              ></div>
+            </div>
           </div>
           
-          <div class="flex gap-2">
-            <button
-              @click="applyFilter('none')"
-              :class="['px-3 py-1 text-sm rounded', currentFilter === 'none' ? 'bg-blue-500 text-white' : 'bg-gray-100 text-gray-700 hover:bg-gray-200']"
-            >
-              Original
-            </button>
-            <button
-              @click="applyFilter('vintage')"
-              :class="['px-3 py-1 text-sm rounded', currentFilter === 'vintage' ? 'bg-blue-500 text-white' : 'bg-gray-100 text-gray-700 hover:bg-gray-200']"
-            >
-              Vintage
-            </button>
-            <button
-              @click="applyFilter('bw')"
-              :class="['px-3 py-1 text-sm rounded', currentFilter === 'bw' ? 'bg-blue-500 text-white' : 'bg-gray-100 text-gray-700 hover:bg-gray-200']"
-            >
-              B&W
-            </button>
+          <!-- Canvas Controls -->
+          <div class="mt-6 flex justify-between items-center">
+            <div class="flex gap-3">
+              <button
+                @click="clearOverlays"
+                class="px-4 py-2 text-sm bg-red-500/20 text-red-300 rounded-xl hover:bg-red-500/30 transition-all border border-red-500/30"
+              >
+                🗑️ Clear All
+              </button>
+              <button
+                @click="undoLast"
+                class="px-4 py-2 text-sm bg-white/10 text-gray-300 rounded-xl hover:bg-white/20 transition-all border border-white/20"
+              >
+                ↶ Undo
+              </button>
+            </div>
+            
+            <div class="flex gap-2">
+              <button
+                @click="applyFilter('none')"
+                :class="['px-4 py-2 text-sm rounded-xl transition-all', currentFilter === 'none' ? 'bg-gradient-to-r from-pink-500 to-purple-600 text-white shadow-lg' : 'bg-white/10 text-gray-300 hover:bg-white/20 border border-white/20']"
+              >
+                Original
+              </button>
+              <button
+                @click="applyFilter('vintage')"
+                :class="['px-4 py-2 text-sm rounded-xl transition-all', currentFilter === 'vintage' ? 'bg-gradient-to-r from-pink-500 to-purple-600 text-white shadow-lg' : 'bg-white/10 text-gray-300 hover:bg-white/20 border border-white/20']"
+              >
+                Vintage
+              </button>
+              <button
+                @click="applyFilter('bw')"
+                :class="['px-4 py-2 text-sm rounded-xl transition-all', currentFilter === 'bw' ? 'bg-gradient-to-r from-pink-500 to-purple-600 text-white shadow-lg' : 'bg-white/10 text-gray-300 hover:bg-white/20 border border-white/20']"
+              >
+                B&W
+              </button>
+            </div>
           </div>
         </div>
       </div>
 
       <!-- Tools Panel -->
-      <div class="space-y-6">
+      <div class="space-y-8">
         <!-- Frames -->
-        <div>
-          <h3 class="font-medium text-gray-800 mb-3">Photo Frames</h3>
-          <div class="grid grid-cols-1 gap-2">
+        <div class="bg-white/5 backdrop-blur-sm rounded-2xl p-6 border border-white/10">
+          <h3 class="text-xl font-semibold text-white mb-4 flex items-center gap-2">
+            <span class="text-2xl">🖼️</span>
+            Photo Frames
+          </h3>
+          <div class="space-y-3">
             <button
               v-for="frame in frames"
               :key="frame.id"
               @click="selectFrame(frame.id)"
-              :class="['p-3 border rounded-lg text-sm text-left transition-all flex items-center gap-3', selectedFrame === frame.id ? 'border-blue-500 bg-blue-50 text-blue-700' : 'border-gray-300 hover:bg-gray-50 hover:border-gray-400']"
+              :class="['p-4 border-2 rounded-xl text-left transition-all duration-300 flex items-center gap-4 w-full', selectedFrame === frame.id ? 'border-pink-400 bg-gradient-to-r from-pink-500/20 to-purple-500/20 text-white shadow-lg' : 'border-white/20 bg-white/5 text-gray-300 hover:border-white/40 hover:bg-white/10']"
             >
-              <div class="text-2xl">{{ frame.emoji }}</div>
+              <div class="text-3xl">{{ frame.emoji }}</div>
               <div class="flex-1">
-                <div class="font-medium">{{ frame.name }}</div>
-                <div class="text-xs text-gray-500 mt-1">{{ frame.description }}</div>
+                <div class="font-semibold text-lg">{{ frame.name }}</div>
+                <div class="text-sm opacity-75">{{ frame.description }}</div>
               </div>
+              <div v-if="selectedFrame === frame.id" class="text-2xl">✨</div>
             </button>
           </div>
         </div>
 
         <!-- Stickers -->
-        <div>
-          <h3 class="font-medium text-gray-800 mb-3">Stickers</h3>
-          <div class="grid grid-cols-6 gap-2">
+        <div class="bg-white/5 backdrop-blur-sm rounded-2xl p-6 border border-white/10">
+          <h3 class="text-xl font-semibold text-white mb-4 flex items-center gap-2">
+            <span class="text-2xl">😊</span>
+            Stickers
+          </h3>
+          <div class="grid grid-cols-6 gap-3">
             <button
               v-for="sticker in stickers"
               :key="sticker"
               @click="addSticker(sticker)"
-              class="text-2xl p-2 hover:bg-gray-100 rounded transition-colors"
+              class="text-3xl p-3 hover:bg-white/10 rounded-xl transition-all duration-300 hover:scale-110"
             >
               {{ sticker }}
             </button>
@@ -152,75 +161,82 @@
         </div>
 
         <!-- Text -->
-        <div>
-          <h3 class="font-medium text-gray-800 mb-3">Add Text</h3>
-          <div class="space-y-2">
+        <div class="bg-white/5 backdrop-blur-sm rounded-2xl p-6 border border-white/10">
+          <h3 class="text-xl font-semibold text-white mb-4 flex items-center gap-2">
+            <span class="text-2xl">✏️</span>
+            Add Text
+          </h3>
+          <div class="space-y-4">
             <input
               v-model="newText"
               type="text"
-              placeholder="Enter text..."
-              class="w-full p-2 border border-gray-300 rounded text-sm"
+              placeholder="Enter your text..."
+              class="w-full p-3 bg-white/10 backdrop-blur-sm border border-white/20 rounded-xl text-white placeholder-gray-400 focus:ring-2 focus:ring-pink-400 focus:border-pink-400 transition-all"
               @keyup.enter="addText"
             />
-            <div class="flex gap-2">
-              <select v-model="textColor" class="flex-1 p-1 border border-gray-300 rounded text-sm">
-                <option value="#000000">Black</option>
-                <option value="#ffffff">White</option>
-                <option value="#ff0000">Red</option>
-                <option value="#00ff00">Green</option>
-                <option value="#0000ff">Blue</option>
-                <option value="#ffff00">Yellow</option>
-                <option value="#ff00ff">Pink</option>
+            <div class="grid grid-cols-2 gap-3">
+              <select v-model="textColor" class="p-2 bg-white/10 backdrop-blur-sm border border-white/20 rounded-xl text-white focus:ring-2 focus:ring-pink-400">
+                <option value="#000000" class="bg-gray-800">Black</option>
+                <option value="#ffffff" class="bg-gray-800">White</option>
+                <option value="#ff0000" class="bg-gray-800">Red</option>
+                <option value="#00ff00" class="bg-gray-800">Green</option>
+                <option value="#0000ff" class="bg-gray-800">Blue</option>
+                <option value="#ffff00" class="bg-gray-800">Yellow</option>
+                <option value="#ff00ff" class="bg-gray-800">Pink</option>
               </select>
-              <select v-model="fontSize" class="flex-1 p-1 border border-gray-300 rounded text-sm">
-                <option value="16">Small</option>
-                <option value="24">Medium</option>
-                <option value="32">Large</option>
-                <option value="48">XL</option>
+              <select v-model="fontSize" class="p-2 bg-white/10 backdrop-blur-sm border border-white/20 rounded-xl text-white focus:ring-2 focus:ring-pink-400">
+                <option value="16" class="bg-gray-800">Small</option>
+                <option value="24" class="bg-gray-800">Medium</option>
+                <option value="32" class="bg-gray-800">Large</option>
+                <option value="48" class="bg-gray-800">XL</option>
               </select>
             </div>
             <button
               @click="addText"
-              class="w-full py-2 bg-blue-600 text-white rounded hover:bg-blue-700 text-sm"
+              class="w-full py-3 bg-gradient-to-r from-blue-500 to-indigo-600 text-white rounded-xl hover:from-blue-600 hover:to-indigo-700 transition-all duration-300 font-medium"
             >
-              Add Text
+              ➕ Add Text
             </button>
           </div>
         </div>
 
         <!-- Shapes -->
-        <div>
-          <h3 class="font-medium text-gray-800 mb-3">Shapes</h3>
-          <div class="grid grid-cols-2 gap-2">
+        <div class="bg-white/5 backdrop-blur-sm rounded-2xl p-6 border border-white/10">
+          <h3 class="text-xl font-semibold text-white mb-4 flex items-center gap-2">
+            <span class="text-2xl">🔷</span>
+            Shapes
+          </h3>
+          <div class="grid grid-cols-2 gap-3">
             <button
               @click="addShape('rectangle')"
-              class="p-2 border border-gray-300 rounded hover:bg-gray-50 text-sm"
+              class="p-3 border border-white/20 rounded-xl hover:bg-white/10 text-white transition-all duration-300"
             >
-              Rectangle
+              ⬜ Rectangle
             </button>
             <button
               @click="addShape('circle')"
-              class="p-2 border border-gray-300 rounded hover:bg-gray-50 text-sm"
+              class="p-3 border border-white/20 rounded-xl hover:bg-white/10 text-white transition-all duration-300"
             >
-              Circle
+              ⭕ Circle
             </button>
           </div>
         </div>
 
         <!-- Action Buttons -->
-        <div class="space-y-3 pt-4 border-t">
+        <div class="space-y-4">
           <button
             @click="downloadImage"
-            class="w-full py-3 bg-green-600 hover:bg-green-700 text-white font-medium rounded transition-colors"
+            class="w-full py-4 bg-gradient-to-r from-green-500 to-teal-600 hover:from-green-600 hover:to-teal-700 text-white font-bold text-lg rounded-2xl transition-all duration-300 flex items-center justify-center gap-3 shadow-lg hover:shadow-xl transform hover:scale-105"
           >
+            <span class="text-2xl">💾</span>
             Download Photo
           </button>
           
           <button
             @click="emit('back')"
-            class="w-full py-2 border border-gray-300 text-gray-700 rounded hover:bg-gray-50"
+            class="w-full py-3 border-2 border-white/20 text-white rounded-2xl hover:bg-white/10 transition-all duration-300 font-medium"
           >
-            Take New Photos
+            🔄 Take New Photos
           </button>
         </div>
       </div>
@@ -239,6 +255,10 @@ const props = defineProps({
   capturedImages: {
     type: Array,
     default: () => []
+  },
+  layout: {
+    type: String,
+    default: 'vertical'
   }
 })
 

@@ -5,7 +5,7 @@ export function useBurstCapture() {
   const isCapturing = ref(false)
   const currentShot = ref(0)
 
-  const startBurstCapture = async (captureFunction, shotCount = 4, delayBetweenShots = 1000) => {
+  const startBurstCapture = async (captureFunction, shotCount = 4, delayBetweenShots = 1000, countdownFunction = null) => {
     isCapturing.value = true
     capturedImages.value = []
     currentShot.value = 0
@@ -13,6 +13,11 @@ export function useBurstCapture() {
     try {
       for (let i = 0; i < shotCount; i++) {
         currentShot.value = i + 1
+        
+        // Individual countdown before each photo
+        if (countdownFunction) {
+          await countdownFunction(3) // 3 second countdown before each photo
+        }
         
         // Capture the frame
         const imageData = captureFunction()

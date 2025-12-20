@@ -1,35 +1,75 @@
 <template>
-  <div class="min-h-screen bg-gray-50 py-8 px-4">
-    <div class="max-w-6xl mx-auto">
+  <div class="min-h-screen bg-gradient-to-br from-purple-900 via-blue-900 to-indigo-900 py-8 px-4">
+    <div class="max-w-7xl mx-auto">
       <!-- Header -->
-      <header class="text-center mb-8">
-        <h1 class="text-4xl font-bold text-gray-900 mb-2">Smart Photobooth</h1>
-        <p class="text-gray-600">Create instant photo strips with your camera</p>
+      <header class="text-center mb-12">
+        <div class="inline-flex items-center gap-3 mb-4">
+          <div class="w-12 h-12 bg-gradient-to-r from-pink-500 to-purple-600 rounded-full flex items-center justify-center">
+            <span class="text-2xl">📸</span>
+          </div>
+          <h1 class="text-5xl font-bold bg-gradient-to-r from-pink-400 via-purple-400 to-indigo-400 bg-clip-text text-transparent">
+            Smart Photobooth
+          </h1>
+        </div>
+        <p class="text-xl text-gray-300 max-w-2xl mx-auto">
+          Create stunning photo strips with professional frames and filters
+        </p>
+        <div class="flex justify-center gap-2 mt-4">
+          <span class="px-3 py-1 bg-pink-500/20 text-pink-300 rounded-full text-sm">✨ AI Powered</span>
+          <span class="px-3 py-1 bg-purple-500/20 text-purple-300 rounded-full text-sm">🎨 Custom Frames</span>
+          <span class="px-3 py-1 bg-blue-500/20 text-blue-300 rounded-full text-sm">📱 Mobile Ready</span>
+        </div>
       </header>
 
       <!-- Main Content -->
-      <div v-if="!finalImage" class="grid lg:grid-cols-2 gap-8 items-start">
+      <div v-if="!finalImage" class="grid lg:grid-cols-2 gap-12 items-start">
         <!-- Camera Section -->
-        <div class="space-y-4">
-          <CameraPreview
-            :stream="stream"
-            :is-initialized="isInitialized"
-            :is-loading="isLoading"
-            :error="error"
-            @retry="initializeCamera"
-          />
+        <div class="space-y-6">
+          <div class="bg-white/10 backdrop-blur-lg rounded-3xl p-8 border border-white/20 shadow-2xl">
+            <h2 class="text-2xl font-semibold text-white mb-6 flex items-center gap-3">
+              <span class="w-8 h-8 bg-gradient-to-r from-pink-500 to-purple-600 rounded-full flex items-center justify-center text-sm">📷</span>
+              Camera Preview
+            </h2>
+            <CameraPreview
+              :stream="stream"
+              :is-initialized="isInitialized"
+              :is-loading="isLoading"
+              :error="error"
+              @retry="initializeCamera"
+            />
+          </div>
           
           <!-- Capture Status -->
           <div v-if="isCapturing" class="text-center">
-            <div class="inline-flex items-center gap-2 px-4 py-2 bg-blue-100 text-blue-800 rounded-full">
-              <div class="w-2 h-2 bg-blue-600 rounded-full animate-pulse"></div>
-              <span class="font-medium">Taking photo {{ currentShot }} of {{ totalShots }}</span>
+            <div class="inline-flex items-center gap-3 px-6 py-4 bg-gradient-to-r from-pink-500/20 to-purple-500/20 backdrop-blur-lg text-white rounded-2xl border border-pink-500/30">
+              <div class="w-3 h-3 bg-gradient-to-r from-pink-400 to-purple-400 rounded-full animate-pulse"></div>
+              <span class="font-medium text-lg">
+                {{ isActive ? `Get ready for photo ${currentShot}!` : `Processing photo ${currentShot} of ${totalShots}...` }}
+              </span>
+            </div>
+            
+            <!-- Photo Progress -->
+            <div class="flex justify-center gap-2 mt-4">
+              <div 
+                v-for="i in totalShots" 
+                :key="i"
+                :class="[
+                  'w-4 h-4 rounded-full transition-all duration-300',
+                  i < currentShot ? 'bg-green-400 shadow-lg shadow-green-400/50' : 
+                  i === currentShot ? 'bg-pink-400 animate-pulse shadow-lg shadow-pink-400/50' : 
+                  'bg-white/30'
+                ]"
+              ></div>
             </div>
           </div>
         </div>
 
         <!-- Controls Section -->
-        <div>
+        <div class="bg-white/10 backdrop-blur-lg rounded-3xl p-8 border border-white/20 shadow-2xl">
+          <h2 class="text-2xl font-semibold text-white mb-6 flex items-center gap-3">
+            <span class="w-8 h-8 bg-gradient-to-r from-blue-500 to-indigo-600 rounded-full flex items-center justify-center text-sm">⚙️</span>
+            Photo Settings
+          </h2>
           <ControlPanel
             :can-start="isInitialized && !isCapturing && !isProcessing"
             :is-capturing="isCapturing"
@@ -45,27 +85,34 @@
       <div v-else class="w-full">
         <div v-show="!finalImage" class="flex items-center justify-center min-h-96">
           <div class="text-center">
-            <div class="animate-spin rounded-full h-12 w-12 border-b-2 border-blue-600 mx-auto mb-4"></div>
-            <p class="text-gray-600">Preparing editor...</p>
+            <div class="animate-spin rounded-full h-16 w-16 border-b-4 border-pink-400 mx-auto mb-6"></div>
+            <p class="text-white text-lg">Preparing your masterpiece...</p>
           </div>
         </div>
         
-        <SimplePhotoEditor
-          v-if="finalImage"
-          :imageDataURL="finalImage"
-          :capturedImages="storedCapturedImages"
-          @download="handleEditorDownload"
-          @back="resetSession"
-          @frameChanged="handleFrameChanged"
-          @filterChanged="handleFilterChanged"
-        />
+        <div v-if="finalImage" class="bg-white/10 backdrop-blur-lg rounded-3xl p-8 border border-white/20 shadow-2xl">
+          <h2 class="text-2xl font-semibold text-white mb-6 flex items-center gap-3">
+            <span class="w-8 h-8 bg-gradient-to-r from-green-500 to-teal-600 rounded-full flex items-center justify-center text-sm">🎨</span>
+            Photo Editor
+          </h2>
+          <SimplePhotoEditor
+            :imageDataURL="finalImage"
+            :capturedImages="storedCapturedImages"
+            :layout="originalLayout"
+            @download="handleEditorDownload"
+            @back="resetSession"
+            @frameChanged="handleFrameChanged"
+            @filterChanged="handleFilterChanged"
+          />
+        </div>
       </div>
 
       <!-- Processing Overlay -->
-      <div v-if="isProcessing" class="fixed inset-0 bg-black bg-opacity-50 flex items-center justify-center z-40">
-        <div class="bg-white rounded-lg p-6 text-center">
-          <div class="animate-spin rounded-full h-8 w-8 border-b-2 border-blue-600 mx-auto mb-4"></div>
-          <p class="text-gray-700 font-medium">Creating your photo strip...</p>
+      <div v-if="isProcessing" class="fixed inset-0 bg-black/70 backdrop-blur-sm flex items-center justify-center z-40">
+        <div class="bg-white/10 backdrop-blur-lg rounded-3xl p-8 text-center border border-white/20 shadow-2xl">
+          <div class="animate-spin rounded-full h-12 w-12 border-b-4 border-pink-400 mx-auto mb-6"></div>
+          <p class="text-white font-medium text-lg">Creating your photo strip...</p>
+          <p class="text-gray-300 text-sm mt-2">This will just take a moment ✨</p>
         </div>
       </div>
 
@@ -74,6 +121,8 @@
         :count="count"
         :is-active="isActive"
         :total-count="3"
+        :current-photo="currentShot"
+        :total-photos="totalShots"
       />
     </div>
   </div>
@@ -127,6 +176,7 @@ const totalShots = ref(4)
 const storedCapturedImages = ref([])
 const currentFrameStyle = ref('none')
 const currentFilter = ref('none')
+const originalLayout = ref('vertical') // Store the original layout choice
 
 
 
@@ -134,20 +184,24 @@ const currentFilter = ref('none')
 const handleStartPhotoshoot = async (settings) => {
   try {
     totalShots.value = settings.shotCount
+    originalLayout.value = settings.layout // Store the original layout
     
-    // Start countdown
-    await startCountdown(3)
+    // No initial countdown - each photo will have its own countdown
     
-    // Capture burst photos
-    const images = await startBurstCapture(captureFrame, settings.shotCount, 1200)
+    // Capture burst photos with individual countdowns
+    const images = await startBurstCapture(captureFrame, settings.shotCount, 1500, startCountdown)
     
     // Store captured images for later use
     storedCapturedImages.value = [...images]
     
+    // Adjust canvas dimensions based on layout
+    const canvasConfig = originalLayout.value === 'grid' 
+      ? { canvasWidth: 800, canvasHeight: 800 } // Square for grid
+      : { canvasWidth: 600, canvasHeight: 800 } // Portrait for strip
+    
     // Create photo layout with no frame initially
     await createPhotoLayout(images, settings.layout, {
-      canvasWidth: 600,
-      canvasHeight: 800,
+      ...canvasConfig,
       title: settings.title,
       showTimestamp: true,
       frameStyle: 'none', // No frame initially, user can select in editor
@@ -198,10 +252,14 @@ const handleFrameChanged = async (frameStyle) => {
   try {
     currentFrameStyle.value = frameStyle
     if (storedCapturedImages.value && storedCapturedImages.value.length > 0) {
-      // Regenerate photo layout with new frame style and current filter
-      await createPhotoLayout(storedCapturedImages.value, 'vertical', {
-        canvasWidth: 600,
-        canvasHeight: 800,
+      // Adjust canvas dimensions based on original layout
+      const canvasConfig = originalLayout.value === 'grid' 
+        ? { canvasWidth: 800, canvasHeight: 800 } // Square for grid
+        : { canvasWidth: 600, canvasHeight: 800 } // Portrait for strip
+      
+      // Regenerate photo layout with new frame style and ORIGINAL layout
+      await createPhotoLayout(storedCapturedImages.value, originalLayout.value, {
+        ...canvasConfig,
         title: '',
         showTimestamp: true,
         frameStyle: frameStyle,
@@ -222,10 +280,14 @@ const handleFilterChanged = async (filterType) => {
   try {
     currentFilter.value = filterType
     if (storedCapturedImages.value && storedCapturedImages.value.length > 0) {
-      // Regenerate photo layout with current frame and new filter
-      await createPhotoLayout(storedCapturedImages.value, 'vertical', {
-        canvasWidth: 600,
-        canvasHeight: 800,
+      // Adjust canvas dimensions based on original layout
+      const canvasConfig = originalLayout.value === 'grid' 
+        ? { canvasWidth: 800, canvasHeight: 800 } // Square for grid
+        : { canvasWidth: 600, canvasHeight: 800 } // Portrait for strip
+      
+      // Regenerate photo layout with current frame and new filter using ORIGINAL layout
+      await createPhotoLayout(storedCapturedImages.value, originalLayout.value, {
+        ...canvasConfig,
         title: '',
         showTimestamp: true,
         frameStyle: currentFrameStyle.value,
@@ -260,6 +322,7 @@ const resetSession = () => {
   storedCapturedImages.value = []
   currentFrameStyle.value = 'none'
   currentFilter.value = 'none'
+  originalLayout.value = 'vertical' // Reset to default
   clearCaptures()
 }
 

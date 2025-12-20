@@ -1,81 +1,97 @@
 <template>
-  <div class="bg-white rounded-lg shadow-lg p-6 max-w-md mx-auto">
-    <h2 class="text-xl font-semibold text-gray-800 mb-4">Photo Settings</h2>
-    
+  <div class="space-y-8">
     <!-- Layout Selection -->
-    <div class="mb-6">
-      <label class="block text-sm font-medium text-gray-700 mb-2">
-        Layout Style
+    <div>
+      <label class="block text-lg font-semibold text-white mb-4 flex items-center gap-2">
+        <span class="text-xl">🎭</span>
+        Choose Your Style
       </label>
-      <div class="grid grid-cols-2 gap-3">
+      <div class="grid grid-cols-1 gap-4">
         <button
           v-for="layout in layoutOptions"
           :key="layout.value"
           @click="selectedLayout = layout.value"
           :class="[
-            'p-4 border-2 rounded-lg text-center transition-colors',
+            'p-6 border-2 rounded-2xl text-left transition-all duration-300 backdrop-blur-sm',
             selectedLayout === layout.value
-              ? 'border-blue-500 bg-blue-50 text-blue-700'
-              : 'border-gray-200 hover:border-gray-300'
+              ? 'border-pink-400 bg-gradient-to-r from-pink-500/20 to-purple-500/20 text-white shadow-lg shadow-pink-500/25'
+              : 'border-white/20 bg-white/5 text-gray-300 hover:border-white/40 hover:bg-white/10'
           ]"
         >
-          <div class="text-lg font-medium">{{ layout.label }}</div>
-          <div class="text-sm text-gray-500 mt-1">{{ layout.description }}</div>
-          <div class="text-xs text-blue-600 mt-2 font-medium">{{ layout.photoCount }}</div>
+          <div class="flex items-center justify-between">
+            <div>
+              <div class="text-xl font-bold">{{ layout.label }}</div>
+              <div class="text-sm opacity-75 mt-1">{{ layout.description }}</div>
+              <div class="text-xs font-medium mt-2 px-2 py-1 bg-white/10 rounded-full inline-block">
+                {{ layout.photoCount }}
+              </div>
+            </div>
+            <div class="text-3xl">
+              {{ selectedLayout === layout.value ? '✨' : layout.value === 'vertical' ? '📱' : '🎨' }}
+            </div>
+          </div>
         </button>
       </div>
     </div>
 
     <!-- Optional Title -->
-    <div class="mb-6">
-      <label class="block text-sm font-medium text-gray-700 mb-2">
+    <div>
+      <label class="block text-lg font-semibold text-white mb-4 flex items-center gap-2">
+        <span class="text-xl">🏷️</span>
         Event Title (Optional)
       </label>
       <input
         v-model="eventTitle"
         type="text"
         placeholder="e.g., Birthday Party 2024"
-        class="w-full p-2 border border-gray-300 rounded-md focus:ring-2 focus:ring-blue-500 focus:border-blue-500"
+        class="w-full p-4 bg-white/10 backdrop-blur-sm border border-white/20 rounded-2xl text-white placeholder-gray-400 focus:ring-2 focus:ring-pink-400 focus:border-pink-400 transition-all"
         maxlength="30"
       />
     </div>
 
     <!-- Action Buttons -->
-    <div class="space-y-3">
+    <div class="space-y-4">
       <button
         @click="startPhotoshoot"
         :disabled="!canStart"
         :class="[
-          'w-full py-3 px-4 rounded-lg font-medium transition-colors',
+          'w-full py-4 px-6 rounded-2xl font-bold text-lg transition-all duration-300 flex items-center justify-center gap-3',
           canStart
-            ? 'bg-blue-600 hover:bg-blue-700 text-white'
-            : 'bg-gray-300 text-gray-500 cursor-not-allowed'
+            ? 'bg-gradient-to-r from-pink-500 to-purple-600 hover:from-pink-600 hover:to-purple-700 text-white shadow-lg shadow-pink-500/25 hover:shadow-xl hover:shadow-pink-500/30 transform hover:scale-105'
+            : 'bg-gray-600/50 text-gray-400 cursor-not-allowed'
         ]"
       >
+        <span class="text-2xl">{{ isCapturing ? '📸' : '🚀' }}</span>
         {{ isCapturing ? 'Taking Photos...' : 'Start Photoshoot' }}
       </button>
 
       <button
         v-if="hasResults"
         @click="$emit('new-session')"
-        class="w-full py-2 px-4 border border-gray-300 rounded-lg text-gray-700 hover:bg-gray-50 transition-colors"
+        class="w-full py-3 px-6 border-2 border-white/20 rounded-2xl text-white hover:bg-white/10 transition-all duration-300 font-medium"
       >
-        Take New Photos
+        🔄 Take New Photos
       </button>
     </div>
 
     <!-- Capture Progress -->
-    <div v-if="isCapturing" class="mt-4">
-      <div class="flex justify-between text-sm text-gray-600 mb-1">
-        <span>Progress</span>
-        <span>{{ currentShot }}/{{ shotCount }}</span>
+    <div v-if="isCapturing" class="space-y-4">
+      <div class="flex justify-between text-white font-medium">
+        <span class="flex items-center gap-2">
+          <span class="text-lg">📊</span>
+          Progress
+        </span>
+        <span class="text-pink-300">{{ currentShot }}/{{ shotCount }}</span>
       </div>
-      <div class="w-full bg-gray-200 rounded-full h-2">
+      <div class="w-full bg-white/10 rounded-full h-3 overflow-hidden">
         <div 
-          class="bg-blue-600 h-2 rounded-full transition-all duration-300"
+          class="bg-gradient-to-r from-pink-400 to-purple-500 h-3 rounded-full transition-all duration-500 shadow-lg"
           :style="{ width: `${(currentShot / shotCount) * 100}%` }"
         ></div>
       </div>
+      <p class="text-center text-gray-300 text-sm">
+        {{ currentShot === 0 ? 'Get ready! 📸' : currentShot === shotCount ? 'Processing... ✨' : 'Keep smiling! 😊' }}
+      </p>
     </div>
   </div>
 </template>
