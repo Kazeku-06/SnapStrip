@@ -57,6 +57,7 @@
           @download="handleEditorDownload"
           @back="resetSession"
           @frameChanged="handleFrameChanged"
+          @filterChanged="handleFilterChanged"
         />
       </div>
 
@@ -180,35 +181,10 @@ const handleEditorDownload = async (editData) => {
       return
     }
 
-    // New format with frame styling and filter - regenerate the layout for final download
-    const { frameStyle, filter, overlayElements } = editData
-    
-    // Get the original captured images (we need to store these)
-    if (storedCapturedImages.value && storedCapturedImages.value.length > 0) {
-      // Recreate photo layout with frame styling AND filter for final download
-      await createPhotoLayout(storedCapturedImages.value, 'vertical', {
-        canvasWidth: 600,
-        canvasHeight: 800,
-        title: '',
-        showTimestamp: true,
-        frameStyle: frameStyle,
-        frameColor: getFrameColor(frameStyle),
-        filter: filter // Apply filter only for final download
-      })
-      
-      // Get the new styled image with filter
-      const styledImageData = getCanvasDataURL()
-      
-      // Download the styled image
-      const timestamp = new Date().toISOString().slice(0, 19).replace(/:/g, '-')
-      const filename = `photobooth-styled-${timestamp}.png`
-      downloadDataURL(styledImageData, filename)
-    } else {
-      // Fallback to original image
-      const timestamp = new Date().toISOString().slice(0, 19).replace(/:/g, '-')
-      const filename = `photobooth-edited-${timestamp}.png`
-      downloadDataURL(editData.imageDataURL, filename)
-    }
+    // New format - the current finalImage already has the correct frame and filter applied
+    const timestamp = new Date().toISOString().slice(0, 19).replace(/:/g, '-')
+    const filename = `photobooth-styled-${timestamp}.png`
+    downloadDataURL(finalImage.value, filename)
   } catch (error) {
     console.error('Download failed:', error)
     // Fallback download
@@ -222,15 +198,15 @@ const handleFrameChanged = async (frameStyle) => {
   try {
     currentFrameStyle.value = frameStyle
     if (storedCapturedImages.value && storedCapturedImages.value.length > 0) {
-      // Regenerate photo layout with new frame style (no filter applied to layout)
+      // Regenerate photo layout with new frame style and current filter
       await createPhotoLayout(storedCapturedImages.value, 'vertical', {
         canvasWidth: 600,
         canvasHeight: 800,
         title: '',
         showTimestamp: true,
         frameStyle: frameStyle,
-        frameColor: getFrameColor(frameStyle)
-        // Don't apply filter to layout, only to final download
+        frameColor: getFrameColor(frameStyle),
+        filter: currentFilter.value
       })
       
       // Update the displayed image
@@ -239,6 +215,30 @@ const handleFrameChanged = async (frameStyle) => {
     }
   } catch (error) {
     console.error('Frame change failed:', error)
+  }
+}
+
+const handleFilterChanged = async (filterType) => {
+  try {
+    currentFilter.value = filterType
+    if (storedCapturedImages.value && storedCapturedImages.value.length > 0) {
+      // Regenerate photo layout with current frame and new filter
+      await createPhotoLayout(storedCapturedImages.value, 'vertical', {
+        canvasWidth: 600,
+        canvasHeight: 800,
+        title: '',
+        showTimestamp: true,
+        frameStyle: currentFrameStyle.value,
+        frameColor: getFrameColor(currentFrameStyle.value),
+        filter: filterType
+      })
+      
+      // Update the displayed image
+      const newImageData = getCanvasDataURL()
+      finalImage.value = newImageData
+    }
+  } catch (error) {
+    console.error('Filter change failed:', error)
   }
 }
 

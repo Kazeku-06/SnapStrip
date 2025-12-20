@@ -46,12 +46,13 @@ export function usePhotoLayout() {
       canvas.height = layout.canvasHeight
       const ctx = canvas.getContext('2d')
 
-      // Fill background with frame color
+      // Fill background with frame color (NO FILTER)
+      ctx.filter = 'none' // Ensure no filter for background
       const bgColor = getFrameBackgroundColor(frameStyle)
       ctx.fillStyle = bgColor
       ctx.fillRect(0, 0, canvas.width, canvas.height)
 
-      // Draw frame border if needed
+      // Draw frame border if needed (NO FILTER)
       if (frameStyle !== 'none') {
         drawFrameBorder(ctx, canvas.width, canvas.height, frameStyle)
       }
@@ -61,21 +62,22 @@ export function usePhotoLayout() {
         if (layout.positions[index]) {
           const pos = layout.positions[index]
           
-          // Apply filter to context before drawing image
+          // Apply filter to context ONLY for drawing images
           applyCanvasFilter(ctx, filter)
           ctx.drawImage(img, pos.x, pos.y, pos.width, pos.height)
           
-          // Reset filter for frame drawing
+          // Reset filter immediately after drawing image
           ctx.filter = 'none'
           
-          // Add frame around each image if needed
+          // Add frame around each image if needed (NO FILTER)
           if (frameStyle !== 'none') {
             drawImageFrame(ctx, pos, frameStyle)
           }
         }
       })
 
-      // Add timestamp and title
+      // Add timestamp and title (NO FILTER)
+      ctx.filter = 'none'
       const textY = canvas.height - 20
       const centerX = canvas.width / 2
 

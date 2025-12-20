@@ -12,16 +12,18 @@
           :class="selectedFrame !== 'none' ? 'frame-' + selectedFrame : 'no-frame'"
           style="width: 400px; height: 600px;"
         >
-          <!-- Base Image -->
-          <img 
-            v-if="imageDataURL && imageDataURL.startsWith('data:image/')"
-            :src="imageDataURL" 
-            alt="Photo to edit"
-            class="w-full h-full object-cover"
-            :class="{ 'filter-vintage': currentFilter === 'vintage', 'filter-bw': currentFilter === 'bw' }"
-            @load="onImageLoad"
-            @error="onImageError"
-          />
+          <!-- Base Image with Filter Wrapper -->
+          <div class="w-full h-full relative">
+            <img 
+              v-if="imageDataURL && imageDataURL.startsWith('data:image/')"
+              :src="imageDataURL" 
+              alt="Photo to edit"
+              class="w-full h-full object-cover"
+              :class="{ 'filter-vintage': currentFilter === 'vintage', 'filter-bw': currentFilter === 'bw' }"
+              @load="onImageLoad"
+              @error="onImageError"
+            />
+          </div>
           
           <!-- Draggable Elements -->
           <div
@@ -240,7 +242,7 @@ const props = defineProps({
   }
 })
 
-const emit = defineEmits(['download', 'back', 'frameChanged'])
+const emit = defineEmits(['download', 'back', 'frameChanged', 'filterChanged'])
 
 // State
 const imageLoaded = ref(false)
@@ -378,7 +380,8 @@ const endDrag = () => {
 // Filters and frames
 const applyFilter = (filterType) => {
   currentFilter.value = filterType
-  // Don't regenerate layout for filter changes, just apply CSS filter to preview
+  // Emit filter change to regenerate layout with new filter
+  emit('filterChanged', filterType)
 }
 
 const selectFrame = (frameType) => {
@@ -557,7 +560,7 @@ const downloadImage = () => {
 
 .frame-vintage img {
   border-radius: 6px;
-  filter: sepia(0.3);
+  /* Removed filter: sepia(0.3) to avoid conflicts */
 }
 
 .frame-vintage::before {
