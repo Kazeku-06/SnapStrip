@@ -1,50 +1,70 @@
 <template>
   <div class="space-y-8">
-    <!-- Filter Selection - Moved to top -->
-    <div>
-      <label class="block text-lg font-semibold text-white mb-4 flex items-center gap-2">
-        <span class="text-xl">🎨</span>
-        Step 1: Choose Filter
-      </label>
-      <div class="grid grid-cols-3 gap-3">
-        <button
-          v-for="filter in filterOptions"
-          :key="filter.value"
-          @click="selectedFilter = filter.value"
-          :class="[
-            'p-4 border-2 rounded-2xl text-center transition-all duration-300',
-            selectedFilter === filter.value
-              ? 'border-slate-400 bg-slate-700/50 text-white shadow-lg'
-              : 'border-slate-600/50 bg-slate-800/30 text-gray-300 hover:border-slate-500 hover:bg-slate-700/30'
-          ]"
-        >
-          <div class="text-2xl mb-2">{{ filter.emoji }}</div>
-          <div class="text-sm font-medium">{{ filter.name }}</div>
-        </button>
+    <!-- Filter and Frame Selection Row -->
+    <div class="grid md:grid-cols-2 gap-8">
+      <!-- Filter Selection -->
+      <div>
+        <label class="block text-lg font-semibold text-white mb-4 flex items-center gap-2">
+          <span class="text-xl">🎨</span>
+          Step 1: Choose Filter
+        </label>
+        <div class="grid grid-cols-3 gap-3">
+          <button
+            v-for="filter in filterOptions"
+            :key="filter.value"
+            @click="selectedFilter = filter.value"
+            :class="[
+              'p-4 border-2 rounded-2xl text-center transition-all duration-300',
+              selectedFilter === filter.value
+                ? 'border-slate-400 bg-slate-700/50 text-white shadow-lg'
+                : 'border-slate-600/50 bg-slate-800/30 text-gray-300 hover:border-slate-500 hover:bg-slate-700/30'
+            ]"
+          >
+            <div class="text-2xl mb-2">{{ filter.emoji }}</div>
+            <div class="text-sm font-medium">{{ filter.name }}</div>
+          </button>
+        </div>
       </div>
-    </div>
 
-    <!-- Frame Selection -->
-    <div>
-      <label class="block text-lg font-semibold text-white mb-4 flex items-center gap-2">
-        <span class="text-xl">🖼️</span>
-        Step 2: Choose Frame
-      </label>
-      <div class="grid grid-cols-2 gap-3">
-        <button
-          v-for="frame in frameOptions"
-          :key="frame.value"
-          @click="selectedFrame = frame.value"
-          :class="[
-            'p-4 border-2 rounded-2xl text-center transition-all duration-300',
-            selectedFrame === frame.value
-              ? 'border-slate-400 bg-slate-700/50 text-white shadow-lg'
-              : 'border-slate-600/50 bg-slate-800/30 text-gray-300 hover:border-slate-500 hover:bg-slate-700/30'
-          ]"
-        >
-          <div class="text-2xl mb-2">{{ frame.emoji }}</div>
-          <div class="text-sm font-medium">{{ frame.name }}</div>
-        </button>
+      <!-- Frame Selection -->
+      <div>
+        <label class="block text-lg font-semibold text-white mb-4 flex items-center gap-2">
+          <span class="text-xl">🖼️</span>
+          Step 2: Choose Frame
+        </label>
+        <div class="grid grid-cols-2 gap-3">
+          <button
+            v-for="frame in frameOptions.slice(0, 4)"
+            :key="frame.value"
+            @click="selectedFrame = frame.value"
+            :class="[
+              'p-4 border-2 rounded-2xl text-center transition-all duration-300',
+              selectedFrame === frame.value
+                ? 'border-slate-400 bg-slate-700/50 text-white shadow-lg'
+                : 'border-slate-600/50 bg-slate-800/30 text-gray-300 hover:border-slate-500 hover:bg-slate-700/30'
+            ]"
+          >
+            <div class="text-2xl mb-2">{{ frame.emoji }}</div>
+            <div class="text-sm font-medium">{{ frame.name }}</div>
+          </button>
+        </div>
+        <!-- Additional frames in second row -->
+        <div class="grid grid-cols-2 gap-3 mt-3">
+          <button
+            v-for="frame in frameOptions.slice(4)"
+            :key="frame.value"
+            @click="selectedFrame = frame.value"
+            :class="[
+              'p-4 border-2 rounded-2xl text-center transition-all duration-300',
+              selectedFrame === frame.value
+                ? 'border-slate-400 bg-slate-700/50 text-white shadow-lg'
+                : 'border-slate-600/50 bg-slate-800/30 text-gray-300 hover:border-slate-500 hover:bg-slate-700/30'
+            ]"
+          >
+            <div class="text-2xl mb-2">{{ frame.emoji }}</div>
+            <div class="text-sm font-medium">{{ frame.name }}</div>
+          </button>
+        </div>
       </div>
     </div>
 

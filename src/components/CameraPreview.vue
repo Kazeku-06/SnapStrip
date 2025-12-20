@@ -1,7 +1,7 @@
 <template>
-  <div class="relative w-full max-w-2xl mx-auto">
+  <div class="relative w-full mx-auto">
     <!-- Loading State -->
-    <div v-if="isLoading" class="flex items-center justify-center h-64 bg-gray-200 rounded-lg">
+    <div v-if="isLoading" class="flex items-center justify-center h-96 bg-gray-200 rounded-lg">
       <div class="text-center">
         <div class="animate-spin rounded-full h-8 w-8 border-b-2 border-gray-900 mx-auto mb-2"></div>
         <p class="text-gray-600">Initializing camera...</p>
@@ -9,7 +9,7 @@
     </div>
 
     <!-- Error State -->
-    <div v-else-if="error" class="flex items-center justify-center h-64 bg-red-50 rounded-lg border border-red-200">
+    <div v-else-if="error" class="flex items-center justify-center h-96 bg-red-50 rounded-lg border border-red-200">
       <div class="text-center p-4">
         <div class="text-red-500 mb-2">
           <svg class="w-12 h-12 mx-auto" fill="none" stroke="currentColor" viewBox="0 0 24 24">
@@ -35,12 +35,12 @@
         muted
         playsinline
         class="w-full h-auto rounded-lg shadow-lg bg-black camera-video"
-        style="min-height: 400px;"
+        style="min-height: 600px; max-height: 700px; object-fit: cover;"
       ></video>
     </div>
 
     <!-- Placeholder -->
-    <div v-else class="flex items-center justify-center h-64 bg-gray-100 rounded-lg border-2 border-dashed border-gray-300">
+    <div v-else class="flex items-center justify-center h-96 bg-gray-100 rounded-lg border-2 border-dashed border-gray-300">
       <div class="text-center">
         <svg class="w-12 h-12 text-gray-400 mx-auto mb-2" fill="none" stroke="currentColor" viewBox="0 0 24 24">
           <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M3 9a2 2 0 012-2h.93a2 2 0 001.664-.89l.812-1.22A2 2 0 0110.07 4h3.86a2 2 0 011.664.89l.812 1.22A2 2 0 0018.07 7H19a2 2 0 012 2v9a2 2 0 01-2 2H5a2 2 0 01-2-2V9z"></path>

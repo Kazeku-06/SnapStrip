@@ -22,62 +22,68 @@
       </header>
 
       <!-- Main Content -->
-      <div v-if="!finalImage" class="grid lg:grid-cols-2 gap-12 items-start">
-        <!-- Camera Section -->
-        <div class="space-y-6">
-          <div class="bg-white/5 backdrop-blur-xl rounded-3xl p-8 border border-white/10 shadow-2xl">
-            <h2 class="text-2xl font-semibold text-white mb-6 flex items-center gap-3">
+      <div v-if="!finalImage" class="space-y-8">
+        <!-- Camera Section - Full Width Center -->
+        <div class="flex justify-center">
+          <div class="bg-white/5 backdrop-blur-xl rounded-3xl p-8 border border-white/10 shadow-2xl max-w-6xl w-full">
+            <h2 class="text-2xl font-semibold text-white mb-6 text-center flex items-center justify-center gap-3">
               <span class="w-8 h-8 bg-slate-700 rounded-xl flex items-center justify-center text-sm">📷</span>
               Camera Preview
             </h2>
-            <CameraPreview
-              :stream="stream"
-              :is-initialized="isInitialized"
-              :is-loading="isLoading"
-              :error="error"
-              @retry="initializeCamera"
-            />
-          </div>
-          
-          <!-- Capture Status -->
-          <div v-if="isCapturing" class="text-center">
-            <div class="inline-flex items-center gap-3 px-6 py-4 bg-slate-800/60 backdrop-blur-xl text-white rounded-2xl border border-slate-600/50">
-              <div class="w-3 h-3 bg-slate-400 rounded-full animate-pulse"></div>
-              <span class="font-medium text-lg">
-                {{ isActive ? `Get ready for photo ${currentShot}!` : `Processing photo ${currentShot} of ${totalShots}...` }}
-              </span>
-            </div>
-            
-            <!-- Photo Progress -->
-            <div class="flex justify-center gap-2 mt-4">
-              <div 
-                v-for="i in totalShots" 
-                :key="i"
-                :class="[
-                  'w-4 h-4 rounded-full transition-all duration-300',
-                  i < currentShot ? 'bg-green-500 shadow-lg shadow-green-500/30' : 
-                  i === currentShot ? 'bg-slate-400 animate-pulse shadow-lg shadow-slate-400/30' : 
-                  'bg-slate-700'
-                ]"
-              ></div>
+            <div class="flex justify-center">
+              <div class="w-full">
+                <CameraPreview
+                  :stream="stream"
+                  :is-initialized="isInitialized"
+                  :is-loading="isLoading"
+                  :error="error"
+                  @retry="initializeCamera"
+                />
+              </div>
             </div>
           </div>
         </div>
+        
+        <!-- Capture Status -->
+        <div v-if="isCapturing" class="text-center">
+          <div class="inline-flex items-center gap-3 px-6 py-4 bg-slate-800/60 backdrop-blur-xl text-white rounded-2xl border border-slate-600/50">
+            <div class="w-3 h-3 bg-slate-400 rounded-full animate-pulse"></div>
+            <span class="font-medium text-lg">
+              {{ isActive ? `Get ready for photo ${currentShot}!` : `Processing photo ${currentShot} of ${totalShots}...` }}
+            </span>
+          </div>
+          
+          <!-- Photo Progress -->
+          <div class="flex justify-center gap-2 mt-4">
+            <div 
+              v-for="i in totalShots" 
+              :key="i"
+              :class="[
+                'w-4 h-4 rounded-full transition-all duration-300',
+                i < currentShot ? 'bg-green-500 shadow-lg shadow-green-500/30' : 
+                i === currentShot ? 'bg-slate-400 animate-pulse shadow-lg shadow-slate-400/30' : 
+                'bg-slate-700'
+              ]"
+            ></div>
+          </div>
+        </div>
 
-        <!-- Controls Section -->
-        <div class="bg-white/5 backdrop-blur-xl rounded-3xl p-8 border border-white/10 shadow-2xl">
-          <h2 class="text-2xl font-semibold text-white mb-6 flex items-center gap-3">
-            <span class="w-8 h-8 bg-slate-700 rounded-xl flex items-center justify-center text-sm">⚙️</span>
-            Photo Settings
-          </h2>
-          <ControlPanel
-            :can-start="isInitialized && !isCapturing && !isProcessing"
-            :is-capturing="isCapturing"
-            :current-shot="currentShot"
-            :has-results="!!finalImage"
-            @start-photoshoot="handleStartPhotoshoot"
-            @new-session="resetSession"
-          />
+        <!-- Photo Settings Section - Below Camera -->
+        <div class="flex justify-center">
+          <div class="bg-white/5 backdrop-blur-xl rounded-3xl p-8 border border-white/10 shadow-2xl max-w-6xl w-full">
+            <h2 class="text-2xl font-semibold text-white mb-6 text-center flex items-center justify-center gap-3">
+              <span class="w-8 h-8 bg-slate-700 rounded-xl flex items-center justify-center text-sm">⚙️</span>
+              Photo Settings
+            </h2>
+            <ControlPanel
+              :can-start="isInitialized && !isCapturing && !isProcessing"
+              :is-capturing="isCapturing"
+              :current-shot="currentShot"
+              :has-results="!!finalImage"
+              @start-photoshoot="handleStartPhotoshoot"
+              @new-session="resetSession"
+            />
+          </div>
         </div>
       </div>
 
