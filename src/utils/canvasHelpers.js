@@ -216,3 +216,23 @@ export const getFramePadding = (frameStyle) => {
       return 30
   }
 }
+
+/**
+ * Apply filter to canvas context
+ */
+export const applyCanvasFilter = (ctx, filterType) => {
+  switch (filterType) {
+    case 'vintage':
+      // Sepia effect for vintage
+      ctx.filter = 'sepia(0.8) contrast(1.2) brightness(1.1) saturate(1.3)'
+      break
+    case 'bw':
+      // Black and white effect
+      ctx.filter = 'grayscale(1) contrast(1.1)'
+      break
+    case 'none':
+    default:
+      ctx.filter = 'none'
+      break
+  }
+}

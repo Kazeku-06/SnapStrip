@@ -6,7 +6,8 @@ import {
   getFrameBackgroundColor,
   drawFrameBorder,
   drawImageFrame,
-  getFramePadding
+  getFramePadding,
+  applyCanvasFilter
 } from '@/utils/canvasHelpers'
 
 export function usePhotoLayout() {
@@ -27,7 +28,8 @@ export function usePhotoLayout() {
         title = '',
         showTimestamp = true,
         frameStyle = 'none',
-        frameColor = '#ffffff'
+        frameColor = '#ffffff',
+        filter = 'none'
       } = options
 
       // Load all images
@@ -54,11 +56,17 @@ export function usePhotoLayout() {
         drawFrameBorder(ctx, canvas.width, canvas.height, frameStyle)
       }
 
-      // Draw images
+      // Draw images with filter
       loadedImages.forEach((img, index) => {
         if (layout.positions[index]) {
           const pos = layout.positions[index]
+          
+          // Apply filter to context before drawing image
+          applyCanvasFilter(ctx, filter)
           ctx.drawImage(img, pos.x, pos.y, pos.width, pos.height)
+          
+          // Reset filter for frame drawing
+          ctx.filter = 'none'
           
           // Add frame around each image if needed
           if (frameStyle !== 'none') {

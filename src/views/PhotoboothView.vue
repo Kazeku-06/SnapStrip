@@ -124,6 +124,8 @@ const { isDownloading, downloadDataURL } = useDownload()
 const finalImage = ref(null)
 const totalShots = ref(4)
 const storedCapturedImages = ref([])
+const currentFrameStyle = ref('none')
+const currentFilter = ref('none')
 
 
 
@@ -178,22 +180,23 @@ const handleEditorDownload = async (editData) => {
       return
     }
 
-    // New format with frame styling - regenerate the layout
+    // New format with frame styling and filter - regenerate the layout for final download
     const { frameStyle, filter, overlayElements } = editData
     
     // Get the original captured images (we need to store these)
     if (storedCapturedImages.value && storedCapturedImages.value.length > 0) {
-      // Recreate photo layout with frame styling
+      // Recreate photo layout with frame styling AND filter for final download
       await createPhotoLayout(storedCapturedImages.value, 'vertical', {
         canvasWidth: 600,
         canvasHeight: 800,
         title: '',
         showTimestamp: true,
         frameStyle: frameStyle,
-        frameColor: getFrameColor(frameStyle)
+        frameColor: getFrameColor(frameStyle),
+        filter: filter // Apply filter only for final download
       })
       
-      // Get the new styled image
+      // Get the new styled image with filter
       const styledImageData = getCanvasDataURL()
       
       // Download the styled image
@@ -217,8 +220,9 @@ const handleEditorDownload = async (editData) => {
 
 const handleFrameChanged = async (frameStyle) => {
   try {
+    currentFrameStyle.value = frameStyle
     if (storedCapturedImages.value && storedCapturedImages.value.length > 0) {
-      // Regenerate photo layout with new frame style
+      // Regenerate photo layout with new frame style (no filter applied to layout)
       await createPhotoLayout(storedCapturedImages.value, 'vertical', {
         canvasWidth: 600,
         canvasHeight: 800,
@@ -226,6 +230,7 @@ const handleFrameChanged = async (frameStyle) => {
         showTimestamp: true,
         frameStyle: frameStyle,
         frameColor: getFrameColor(frameStyle)
+        // Don't apply filter to layout, only to final download
       })
       
       // Update the displayed image
@@ -252,6 +257,8 @@ const getFrameColor = (frameStyle) => {
 const resetSession = () => {
   finalImage.value = null
   storedCapturedImages.value = []
+  currentFrameStyle.value = 'none'
+  currentFilter.value = 'none'
   clearCaptures()
 }
 

@@ -378,6 +378,7 @@ const endDrag = () => {
 // Filters and frames
 const applyFilter = (filterType) => {
   currentFilter.value = filterType
+  // Don't regenerate layout for filter changes, just apply CSS filter to preview
 }
 
 const selectFrame = (frameType) => {
@@ -400,7 +401,7 @@ const undoLast = () => {
 
 // Download
 const downloadImage = () => {
-  // Emit download with frame and filter information
+  // Emit download with frame and filter information for final generation
   console.log('Download clicked with filter:', currentFilter.value, 'frame:', selectedFrame.value)
   emit('download', {
     imageDataURL: props.imageDataURL,
