@@ -13,31 +13,17 @@
           :key="layout.value"
           @click="selectedLayout = layout.value"
           :class="[
-            'p-3 border-2 rounded-lg text-center transition-colors',
+            'p-4 border-2 rounded-lg text-center transition-colors',
             selectedLayout === layout.value
               ? 'border-blue-500 bg-blue-50 text-blue-700'
               : 'border-gray-200 hover:border-gray-300'
           ]"
         >
-          <div class="text-sm font-medium">{{ layout.label }}</div>
-          <div class="text-xs text-gray-500 mt-1">{{ layout.description }}</div>
+          <div class="text-lg font-medium">{{ layout.label }}</div>
+          <div class="text-sm text-gray-500 mt-1">{{ layout.description }}</div>
+          <div class="text-xs text-blue-600 mt-2 font-medium">{{ layout.photoCount }}</div>
         </button>
       </div>
-    </div>
-
-    <!-- Shot Count -->
-    <div class="mb-6">
-      <label class="block text-sm font-medium text-gray-700 mb-2">
-        Number of Photos
-      </label>
-      <select 
-        v-model="shotCount" 
-        class="w-full p-2 border border-gray-300 rounded-md focus:ring-2 focus:ring-blue-500 focus:border-blue-500"
-      >
-        <option value="3">3 Photos</option>
-        <option value="4">4 Photos</option>
-        <option value="6">6 Photos</option>
-      </select>
     </div>
 
     <!-- Optional Title -->
@@ -95,7 +81,7 @@
 </template>
 
 <script setup>
-import { ref, computed } from 'vue'
+import { ref, computed, watch } from 'vue'
 
 const props = defineProps({
   canStart: {
@@ -119,26 +105,32 @@ const props = defineProps({
 const emit = defineEmits(['start-photoshoot', 'new-session'])
 
 const selectedLayout = ref('vertical')
-const shotCount = ref(4)
 const eventTitle = ref('')
 
 const layoutOptions = [
   {
     value: 'vertical',
-    label: 'Strip',
-    description: 'Vertical layout'
+    label: 'Photo Strip',
+    description: 'Classic vertical layout',
+    photoCount: '3 Photos'
   },
   {
     value: 'grid',
-    label: 'Grid',
-    description: 'Square layout'
+    label: 'Photo Grid',
+    description: 'Square grid layout',
+    photoCount: '4 Photos'
   }
 ]
+
+// Automatic shot count based on layout
+const shotCount = computed(() => {
+  return selectedLayout.value === 'vertical' ? 3 : 4
+})
 
 const startPhotoshoot = () => {
   emit('start-photoshoot', {
     layout: selectedLayout.value,
-    shotCount: parseInt(shotCount.value),
+    shotCount: shotCount.value,
     title: eventTitle.value.trim()
   })
 }
