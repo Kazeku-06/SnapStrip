@@ -111,6 +111,8 @@ export const getFrameBackgroundColor = (frameStyle) => {
       return '#000428'
     case 'love':
       return '#ff9a9e'
+    case 'custom':
+      return '#ff6b6b' // Atau warna sesuai desain kamu
     default:
       return '#ffffff'
   }
@@ -190,6 +192,8 @@ export const getFrameBorderColor = (frameStyle) => {
       return '#004e92'
     case 'love':
       return '#fad0c4'
+    case 'custom':
+      return '#ff8c42' // Border color untuk custom frame
     default:
       return '#000000'
   }
@@ -212,6 +216,8 @@ export const getFramePadding = (frameStyle) => {
       return 35  // Space theme
     case 'love':
       return 40  // Romantic spacing
+    case 'custom':
+      return 35  // Custom spacing
     default:
       return 30
   }

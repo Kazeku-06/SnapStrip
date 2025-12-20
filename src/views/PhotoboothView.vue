@@ -250,6 +250,7 @@ const getFrameColor = (frameStyle) => {
     case 'vintage': return '#8B4513'
     case 'galaxy': return '#000428'
     case 'love': return '#ff9a9e'
+    case 'custom': return '#ff6b6b'
     default: return '#ffffff'
   }
 }

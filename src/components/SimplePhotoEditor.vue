@@ -269,7 +269,8 @@ const frames = [
   { id: 'party', name: 'Party Time', description: '🎉 Celebration', emoji: '🎉' },
   { id: 'vintage', name: 'Vintage Film', description: '📸 Retro Vibes', emoji: '📸' },
   { id: 'galaxy', name: 'Galaxy Dream', description: '🌌 Space Magic', emoji: '🌌' },
-  { id: 'love', name: 'Love Story', description: '💖 Romance', emoji: '💖' }
+  { id: 'love', name: 'Love Story', description: '💖 Romance', emoji: '💖' },
+  { id: 'custom', name: 'Custom Design', description: '🎨 Your Design', emoji: '🎨' }
 ]
 
 
@@ -436,284 +437,67 @@ const downloadImage = () => {
   background: #f9fafb;
 }
 
-/* Cute Pink Frame */
+/* Cute Pink Frame - Using your custom design */
 .frame-cute {
   border: none !important;
-  background: linear-gradient(135deg, #ff9a9e 0%, #fecfef 50%, #fecfef 100%);
-  box-shadow: 0 0 30px rgba(255, 182, 193, 0.6);
+  background: url('/frames/cute-frame.png') no-repeat center center;
+  background-size: 100% 100%;
   padding: 12px;
   position: relative;
 }
 
-.frame-cute img {
-  border-radius: 12px;
-}
-
-.frame-cute::before {
-  content: '💕 💖 💕 💖 💕 💖 💕 💖 💕 💖 💕 💖';
-  position: absolute;
-  top: 2px;
-  left: 0;
-  right: 0;
-  text-align: center;
-  font-size: 14px;
-  line-height: 1;
-  z-index: 10;
-}
-
-.frame-cute::after {
-  content: '💕 💖 💕 💖 💕 💖 💕 💖 💕 💖 💕 💖';
-  position: absolute;
-  bottom: 2px;
-  left: 0;
-  right: 0;
-  text-align: center;
-  font-size: 14px;
-  line-height: 1;
-  z-index: 10;
-}
-
-/* Elegant Gold Frame */
+/* Elegant Gold Frame - Using your custom design */
 .frame-elegant {
   border: none !important;
-  background: linear-gradient(135deg, #FFD700 0%, #FFA500 50%, #FFD700 100%);
-  box-shadow: 0 0 40px rgba(255, 215, 0, 0.8), inset 0 0 20px rgba(255, 255, 255, 0.3);
+  background: url('/frames/elegant-frame.png') no-repeat center center;
+  background-size: 100% 100%;
   padding: 15px;
   position: relative;
-  animation: elegantShimmer 4s ease-in-out infinite;
 }
 
-.frame-elegant img {
-  border-radius: 8px;
-}
-
-.frame-elegant::before {
-  content: '✨ 👑 ✨ 💎 ✨ 👑 ✨ 💎 ✨ 👑 ✨';
-  position: absolute;
-  top: 2px;
-  left: 0;
-  right: 0;
-  text-align: center;
-  font-size: 16px;
-  line-height: 1;
-  z-index: 10;
-}
-
-.frame-elegant::after {
-  content: '✨ 👑 ✨ 💎 ✨ 👑 ✨ 💎 ✨ 👑 ✨';
-  position: absolute;
-  bottom: 2px;
-  left: 0;
-  right: 0;
-  text-align: center;
-  font-size: 16px;
-  line-height: 1;
-  z-index: 10;
-}
-
-/* Party Time Frame */
+/* Party Time Frame - Using your custom design */
 .frame-party {
   border: none !important;
-  background: linear-gradient(45deg, #ff6b6b 0%, #4ecdc4 25%, #45b7d1 50%, #96ceb4 75%, #ffeaa7 100%);
-  box-shadow: 0 0 35px rgba(255, 107, 107, 0.6);
+  background: url('/frames/party-frame.png') no-repeat center center;
+  background-size: 100% 100%;
   padding: 10px;
   position: relative;
-  animation: partyPulse 2s ease-in-out infinite;
 }
 
-.frame-party img {
-  border-radius: 10px;
-}
-
-.frame-party::before {
-  content: '🎉 🎊 🎈 🎁 🎉 🎊 🎈 🎁 🎉 🎊';
-  position: absolute;
-  top: 2px;
-  left: 0;
-  right: 0;
-  text-align: center;
-  font-size: 15px;
-  line-height: 1;
-  z-index: 10;
-}
-
-.frame-party::after {
-  content: '🎉 🎊 🎈 🎁 🎉 🎊 🎈 🎁 🎉 🎊';
-  position: absolute;
-  bottom: 2px;
-  left: 0;
-  right: 0;
-  text-align: center;
-  font-size: 15px;
-  line-height: 1;
-  z-index: 10;
-}
-
-/* Vintage Film Frame */
+/* Vintage Film Frame - Using your custom design */
 .frame-vintage {
   border: none !important;
-  background: linear-gradient(90deg, #654321 0%, #8B4513 50%, #654321 100%);
-  box-shadow: inset 0 0 20px rgba(0, 0, 0, 0.4), 0 8px 25px rgba(0, 0, 0, 0.5);
+  background: url('/frames/vintage-frame.png') no-repeat center center;
+  background-size: 100% 100%;
   padding: 15px;
   position: relative;
 }
 
-.frame-vintage img {
-  border-radius: 6px;
-  /* Removed filter: sepia(0.3) to avoid conflicts */
-}
-
-.frame-vintage::before {
-  content: '📸 🎞️ 📷 🎬 📸 🎞️ 📷 🎬 📸';
-  position: absolute;
-  top: 3px;
-  left: 0;
-  right: 0;
-  text-align: center;
-  font-size: 16px;
-  line-height: 1;
-  z-index: 10;
-}
-
-.frame-vintage::after {
-  content: '📸 🎞️ 📷 🎬 📸 🎞️ 📷 🎬 📸';
-  position: absolute;
-  bottom: 3px;
-  left: 0;
-  right: 0;
-  text-align: center;
-  font-size: 16px;
-  line-height: 1;
-  z-index: 10;
-}
-
-/* Galaxy Dream Frame */
+/* Galaxy Dream Frame - Using your custom design */
 .frame-galaxy {
   border: none !important;
-  background: linear-gradient(135deg, #000428 0%, #004e92 25%, #1a1a2e 50%, #16213e 75%, #0f3460 100%);
-  box-shadow: 0 0 50px rgba(0, 100, 255, 0.8), inset 0 0 30px rgba(255, 255, 255, 0.1);
+  background: url('/frames/galaxy-frame.png') no-repeat center center;
+  background-size: 100% 100%;
   padding: 12px;
   position: relative;
-  animation: galaxyGlow 4s ease-in-out infinite;
 }
 
-.frame-galaxy img {
-  border-radius: 8px;
-}
-
-.frame-galaxy::before {
-  content: '🌌 ⭐ 🌟 🚀 🌌 ⭐ 🌟 🚀 🌌';
-  position: absolute;
-  top: 2px;
-  left: 0;
-  right: 0;
-  text-align: center;
-  font-size: 15px;
-  line-height: 1;
-  z-index: 10;
-}
-
-.frame-galaxy::after {
-  content: '🌌 ⭐ 🌟 🚀 🌌 ⭐ 🌟 🚀 🌌';
-  position: absolute;
-  bottom: 2px;
-  left: 0;
-  right: 0;
-  text-align: center;
-  font-size: 15px;
-  line-height: 1;
-  z-index: 10;
-}
-
-/* Love Story Frame */
+/* Love Story Frame - Using your custom design */
 .frame-love {
   border: none !important;
-  background: linear-gradient(135deg, #ff9a9e 0%, #fad0c4 50%, #ff9a9e 100%);
-  box-shadow: 0 0 35px rgba(255, 154, 158, 0.7);
+  background: url('/frames/love-frame.png') no-repeat center center;
+  background-size: 100% 100%;
   padding: 12px;
   position: relative;
-  animation: loveGlow 3s ease-in-out infinite;
 }
 
+/* Simplified frame styles - all using your custom designs */
+.frame-cute img,
+.frame-elegant img,
+.frame-party img,
+.frame-vintage img,
+.frame-galaxy img,
 .frame-love img {
-  border-radius: 12px;
-}
-
-.frame-love::before {
-  content: '💖 💕 💗 💓 💖 💕 💗 💓 💖 💕';
-  position: absolute;
-  top: 2px;
-  left: 0;
-  right: 0;
-  text-align: center;
-  font-size: 14px;
-  line-height: 1;
-  z-index: 10;
-}
-
-.frame-love::after {
-  content: '💖 💕 💗 💓 💖 💕 💗 💓 💖 💕';
-  position: absolute;
-  bottom: 2px;
-  left: 0;
-  right: 0;
-  text-align: center;
-  font-size: 14px;
-  line-height: 1;
-  z-index: 10;
-}
-
-/* Animation for frame selection */
-button {
-  transition: all 0.2s ease;
-}
-
-button:hover {
-  transform: translateY(-1px);
-}
-
-/* Elegant shimmer animation */
-@keyframes elegantShimmer {
-  0%, 100% { 
-    box-shadow: 0 0 40px rgba(255, 215, 0, 0.8), inset 0 0 20px rgba(255, 255, 255, 0.3);
-  }
-  50% { 
-    box-shadow: 0 0 60px rgba(255, 165, 0, 0.9), inset 0 0 30px rgba(255, 255, 255, 0.4);
-  }
-}
-
-/* Party pulse animation */
-@keyframes partyPulse {
-  0%, 100% { 
-    box-shadow: 0 0 35px rgba(255, 107, 107, 0.6);
-    transform: scale(1);
-  }
-  50% { 
-    box-shadow: 0 0 50px rgba(76, 205, 196, 0.8);
-    transform: scale(1.02);
-  }
-}
-
-/* Galaxy glow animation */
-@keyframes galaxyGlow {
-  0%, 100% { 
-    box-shadow: 0 0 50px rgba(0, 100, 255, 0.8), inset 0 0 30px rgba(255, 255, 255, 0.1);
-  }
-  33% { 
-    box-shadow: 0 0 60px rgba(138, 43, 226, 0.9), inset 0 0 40px rgba(255, 255, 255, 0.2);
-  }
-  66% { 
-    box-shadow: 0 0 55px rgba(255, 20, 147, 0.7), inset 0 0 35px rgba(255, 255, 255, 0.15);
-  }
-}
-
-/* Love glow animation */
-@keyframes loveGlow {
-  0%, 100% { 
-    box-shadow: 0 0 35px rgba(255, 154, 158, 0.7);
-  }
-  50% { 
-    box-shadow: 0 0 50px rgba(250, 208, 196, 0.9);
-  }
+  border-radius: 8px;
 }
 </style>
