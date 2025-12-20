@@ -1,23 +1,23 @@
 <template>
-  <div class="min-h-screen bg-gradient-to-br from-slate-900 via-gray-900 to-black py-8 px-4">
+  <div class="min-h-screen bg-gradient-to-br from-purple-400 via-pink-400 to-orange-400 py-8 px-4">
     <div class="max-w-7xl mx-auto">
       <!-- Header -->
       <header class="text-center mb-12">
         <div class="inline-flex items-center gap-4 mb-6">
-          <div class="w-14 h-14 bg-gradient-to-r from-slate-600 to-slate-700 rounded-2xl flex items-center justify-center shadow-lg">
+          <div class="w-14 h-14 bg-gradient-to-r from-yellow-400 to-orange-500 rounded-2xl flex items-center justify-center shadow-lg">
             <span class="text-2xl">📸</span>
           </div>
-          <h1 class="text-5xl font-bold bg-gradient-to-r from-white via-gray-200 to-gray-400 bg-clip-text text-transparent">
+          <h1 class="text-5xl font-bold bg-gradient-to-r from-white via-yellow-100 to-pink-100 bg-clip-text text-transparent drop-shadow-lg">
             Smart Photobooth
           </h1>
         </div>
-        <p class="text-xl text-gray-400 max-w-2xl mx-auto font-light">
+        <p class="text-xl text-white/90 max-w-2xl mx-auto font-light drop-shadow-md">
           Professional photo strips with custom frames and filters
         </p>
         <div class="flex justify-center gap-3 mt-6">
-          <span class="px-4 py-2 bg-slate-800/60 text-slate-300 rounded-full text-sm border border-slate-700">✨ Professional Quality</span>
-          <span class="px-4 py-2 bg-slate-800/60 text-slate-300 rounded-full text-sm border border-slate-700">🎨 Custom Frames</span>
-          <span class="px-4 py-2 bg-slate-800/60 text-slate-300 rounded-full text-sm border border-slate-700">📱 Instant Download</span>
+          <span class="px-4 py-2 bg-white/20 text-white rounded-full text-sm border border-white/30 backdrop-blur-sm">✨ Professional Quality</span>
+          <span class="px-4 py-2 bg-white/20 text-white rounded-full text-sm border border-white/30 backdrop-blur-sm">🎨 Custom Frames</span>
+          <span class="px-4 py-2 bg-white/20 text-white rounded-full text-sm border border-white/30 backdrop-blur-sm">📱 Instant Download</span>
         </div>
       </header>
 
@@ -25,9 +25,9 @@
       <div v-if="!finalImage" class="space-y-8">
         <!-- Camera Section - Full Width Center -->
         <div class="flex justify-center">
-          <div class="bg-white/5 backdrop-blur-xl rounded-3xl p-8 border border-white/10 shadow-2xl max-w-6xl w-full">
-            <h2 class="text-2xl font-semibold text-white mb-6 text-center flex items-center justify-center gap-3">
-              <span class="w-8 h-8 bg-slate-700 rounded-xl flex items-center justify-center text-sm">📷</span>
+          <div class="bg-white/20 backdrop-blur-xl rounded-3xl p-8 border border-white/30 shadow-2xl max-w-6xl w-full">
+            <h2 class="text-2xl font-semibold text-white mb-6 text-center flex items-center justify-center gap-3 drop-shadow-md">
+              <span class="w-8 h-8 bg-gradient-to-r from-cyan-400 to-blue-500 rounded-xl flex items-center justify-center text-sm shadow-lg">📷</span>
               Camera Preview
             </h2>
             <div class="flex justify-center">
@@ -46,9 +46,9 @@
         
         <!-- Capture Status -->
         <div v-if="isCapturing" class="text-center">
-          <div class="inline-flex items-center gap-3 px-6 py-4 bg-slate-800/60 backdrop-blur-xl text-white rounded-2xl border border-slate-600/50">
-            <div class="w-3 h-3 bg-slate-400 rounded-full animate-pulse"></div>
-            <span class="font-medium text-lg">
+          <div class="inline-flex items-center gap-3 px-6 py-4 bg-white/20 backdrop-blur-xl text-white rounded-2xl border border-white/30 shadow-lg">
+            <div class="w-3 h-3 bg-yellow-400 rounded-full animate-pulse shadow-lg"></div>
+            <span class="font-medium text-lg drop-shadow-md">
               {{ isActive ? `Get ready for photo ${currentShot}!` : `Processing photo ${currentShot} of ${totalShots}...` }}
             </span>
           </div>
@@ -60,9 +60,9 @@
               :key="i"
               :class="[
                 'w-4 h-4 rounded-full transition-all duration-300',
-                i < currentShot ? 'bg-green-500 shadow-lg shadow-green-500/30' : 
-                i === currentShot ? 'bg-slate-400 animate-pulse shadow-lg shadow-slate-400/30' : 
-                'bg-slate-700'
+                i < currentShot ? 'bg-green-400 shadow-lg shadow-green-400/50' : 
+                i === currentShot ? 'bg-yellow-400 animate-pulse shadow-lg shadow-yellow-400/50' : 
+                'bg-white/30'
               ]"
             ></div>
           </div>
@@ -70,9 +70,9 @@
 
         <!-- Photo Settings Section - Below Camera -->
         <div class="flex justify-center">
-          <div class="bg-white/5 backdrop-blur-xl rounded-3xl p-8 border border-white/10 shadow-2xl max-w-6xl w-full">
-            <h2 class="text-2xl font-semibold text-white mb-6 text-center flex items-center justify-center gap-3">
-              <span class="w-8 h-8 bg-slate-700 rounded-xl flex items-center justify-center text-sm">⚙️</span>
+          <div class="bg-white/20 backdrop-blur-xl rounded-3xl p-8 border border-white/30 shadow-2xl max-w-6xl w-full">
+            <h2 class="text-2xl font-semibold text-white mb-6 text-center flex items-center justify-center gap-3 drop-shadow-md">
+              <span class="w-8 h-8 bg-gradient-to-r from-pink-400 to-purple-500 rounded-xl flex items-center justify-center text-sm shadow-lg">⚙️</span>
               Photo Settings
             </h2>
             <ControlPanel
@@ -109,11 +109,11 @@
       </div>
 
       <!-- Processing Overlay -->
-      <div v-if="isProcessing" class="fixed inset-0 bg-black/80 backdrop-blur-sm flex items-center justify-center z-40">
-        <div class="bg-slate-800/90 backdrop-blur-xl rounded-3xl p-8 text-center border border-slate-600/50 shadow-2xl">
-          <div class="animate-spin rounded-full h-12 w-12 border-b-4 border-slate-400 mx-auto mb-6"></div>
-          <p class="text-white font-medium text-lg">Creating your photo strip...</p>
-          <p class="text-gray-400 text-sm mt-2">This will just take a moment</p>
+      <div v-if="isProcessing" class="fixed inset-0 bg-black/60 backdrop-blur-sm flex items-center justify-center z-40">
+        <div class="bg-white/20 backdrop-blur-xl rounded-3xl p-8 text-center border border-white/30 shadow-2xl">
+          <div class="animate-spin rounded-full h-12 w-12 border-b-4 border-yellow-400 mx-auto mb-6"></div>
+          <p class="text-white font-medium text-lg drop-shadow-md">Creating your photo strip...</p>
+          <p class="text-white/80 text-sm mt-2">This will just take a moment</p>
         </div>
       </div>
 
