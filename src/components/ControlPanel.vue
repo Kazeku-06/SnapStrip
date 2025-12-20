@@ -24,11 +24,35 @@
       </div>
     </div>
 
+    <!-- Frame Selection -->
+    <div>
+      <label class="block text-lg font-semibold text-white mb-4 flex items-center gap-2">
+        <span class="text-xl">🖼️</span>
+        Step 2: Choose Frame
+      </label>
+      <div class="grid grid-cols-2 gap-3">
+        <button
+          v-for="frame in frameOptions"
+          :key="frame.value"
+          @click="selectedFrame = frame.value"
+          :class="[
+            'p-4 border-2 rounded-2xl text-center transition-all duration-300',
+            selectedFrame === frame.value
+              ? 'border-slate-400 bg-slate-700/50 text-white shadow-lg'
+              : 'border-slate-600/50 bg-slate-800/30 text-gray-300 hover:border-slate-500 hover:bg-slate-700/30'
+          ]"
+        >
+          <div class="text-2xl mb-2">{{ frame.emoji }}</div>
+          <div class="text-sm font-medium">{{ frame.name }}</div>
+        </button>
+      </div>
+    </div>
+
     <!-- Layout Selection -->
     <div>
       <label class="block text-lg font-semibold text-white mb-4 flex items-center gap-2">
         <span class="text-xl">🎭</span>
-        Step 2: Choose Your Style
+        Step 3: Choose Your Style
       </label>
       <div class="grid grid-cols-1 gap-4">
         <button
@@ -62,7 +86,7 @@
     <div>
       <label class="block text-lg font-semibold text-white mb-4 flex items-center gap-2">
         <span class="text-xl">🏷️</span>
-        Step 3: Event Title (Optional)
+        Step 4: Event Title (Optional)
       </label>
       <input
         v-model="eventTitle"
@@ -146,12 +170,24 @@ const emit = defineEmits(['start-photoshoot', 'new-session'])
 
 const selectedLayout = ref('vertical')
 const selectedFilter = ref('none')
+const selectedFrame = ref('none')
 const eventTitle = ref('')
 
 const filterOptions = [
   { value: 'none', name: 'Original', emoji: '📷' },
   { value: 'vintage', name: 'Vintage', emoji: '📸' },
   { value: 'bw', name: 'B&W', emoji: '⚫' }
+]
+
+const frameOptions = [
+  { value: 'none', name: 'No Frame', emoji: '📷' },
+  { value: 'cute', name: 'Cute Pink', emoji: '💕' },
+  { value: 'elegant', name: 'Gold', emoji: '✨' },
+  { value: 'party', name: 'Party', emoji: '🎉' },
+  { value: 'vintage', name: 'Vintage', emoji: '📸' },
+  { value: 'galaxy', name: 'Galaxy', emoji: '🌌' },
+  { value: 'love', name: 'Love', emoji: '💖' },
+  { value: 'custom', name: 'Custom', emoji: '🎨' }
 ]
 
 const layoutOptions = [
@@ -179,7 +215,8 @@ const startPhotoshoot = () => {
     layout: selectedLayout.value,
     shotCount: shotCount.value,
     title: eventTitle.value.trim(),
-    filter: selectedFilter.value
+    filter: selectedFilter.value,
+    frame: selectedFrame.value
   })
 }
 </script>

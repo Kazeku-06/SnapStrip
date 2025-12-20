@@ -81,7 +81,7 @@
         </div>
       </div>
 
-      <!-- Editor Section -->
+      <!-- Result Section -->
       <div v-else class="w-full">
         <div v-show="!finalImage" class="flex items-center justify-center min-h-96">
           <div class="text-center">
@@ -90,19 +90,14 @@
           </div>
         </div>
         
-        <div v-if="finalImage" class="bg-white/5 backdrop-blur-xl rounded-3xl p-8 border border-white/10 shadow-2xl">
-          <h2 class="text-2xl font-semibold text-white mb-6 flex items-center gap-3">
-            <span class="w-8 h-8 bg-slate-700 rounded-xl flex items-center justify-center text-sm">🎨</span>
-            Photo Editor
-          </h2>
-          <SimplePhotoEditor
+        <div v-if="finalImage">
+          <PhotoResult
             :imageDataURL="finalImage"
-            :capturedImages="storedCapturedImages"
             :layout="originalLayout"
-            @download="handleEditorDownload"
-            @back="resetSession"
-            @frameChanged="handleFrameChanged"
+            :isDownloading="isDownloading"
+            @download="handleResultDownload"
             @retake="handleRetakePhotos"
+            @new-session="resetSession"
           />
         </div>
       </div>
@@ -133,7 +128,7 @@ import { ref, onMounted } from 'vue'
 import CameraPreview from '@/components/CameraPreview.vue'
 import CountdownOverlay from '@/components/CountdownOverlay.vue'
 import ControlPanel from '@/components/ControlPanel.vue'
-import SimplePhotoEditor from '@/components/SimplePhotoEditor.vue'
+import PhotoResult from '@/components/PhotoResult.vue'
 import { useCamera } from '@/composables/useCamera'
 import { useCountdown } from '@/composables/useCountdown'
 import { useBurstCapture } from '@/composables/useBurstCapture'
@@ -186,8 +181,7 @@ const handleStartPhotoshoot = async (settings) => {
     totalShots.value = settings.shotCount
     originalLayout.value = settings.layout // Store the original layout
     currentFilter.value = settings.filter // Store the selected filter
-    
-    // No initial countdown - each photo will have its own countdown
+    currentFrameStyle.value = settings.frame // Store the selected frame
     
     // Capture burst photos with individual countdowns
     const images = await startBurstCapture(captureFrame, settings.shotCount, 1500, startCountdown)
@@ -200,17 +194,17 @@ const handleStartPhotoshoot = async (settings) => {
       ? { canvasWidth: 800, canvasHeight: 800 } // Square for grid
       : { canvasWidth: 600, canvasHeight: 800 } // Portrait for strip
     
-    // Create photo layout with selected filter applied
+    // Create photo layout with all selected settings applied
     await createPhotoLayout(images, settings.layout, {
       ...canvasConfig,
       title: settings.title,
       showTimestamp: true,
-      frameStyle: 'none', // No frame initially, user can select in editor
-      frameColor: '#ffffff',
+      frameStyle: settings.frame, // Apply the pre-selected frame
+      frameColor: getFrameColor(settings.frame),
       filter: settings.filter // Apply the pre-selected filter
     })
     
-    // Get final image and go directly to editor
+    // Get final image and show result
     const imageData = getCanvasDataURL()
     console.log('Canvas data URL:', imageData ? 'Generated' : 'Failed')
     console.log('Image data length:', imageData ? imageData.length : 0)
@@ -227,54 +221,14 @@ const handleStartPhotoshoot = async (settings) => {
 
 
 
-const handleEditorDownload = async (editData) => {
+const handleResultDownload = async () => {
   try {
-    // If it's just a string (old format), download directly
-    if (typeof editData === 'string') {
-      const timestamp = new Date().toISOString().slice(0, 19).replace(/:/g, '-')
-      const filename = `photobooth-edited-${timestamp}.png`
-      downloadDataURL(editData, filename)
-      return
-    }
-
-    // New format - the current finalImage already has the correct frame and filter applied
     const timestamp = new Date().toISOString().slice(0, 19).replace(/:/g, '-')
-    const filename = `photobooth-styled-${timestamp}.png`
+    const filename = `photobooth-${timestamp}.png`
     downloadDataURL(finalImage.value, filename)
   } catch (error) {
     console.error('Download failed:', error)
-    // Fallback download
-    const timestamp = new Date().toISOString().slice(0, 19).replace(/:/g, '-')
-    const filename = `photobooth-fallback-${timestamp}.png`
-    downloadDataURL(typeof editData === 'string' ? editData : editData.imageDataURL, filename)
-  }
-}
-
-const handleFrameChanged = async (frameStyle) => {
-  try {
-    currentFrameStyle.value = frameStyle
-    if (storedCapturedImages.value && storedCapturedImages.value.length > 0) {
-      // Adjust canvas dimensions based on original layout
-      const canvasConfig = originalLayout.value === 'grid' 
-        ? { canvasWidth: 800, canvasHeight: 800 } // Square for grid
-        : { canvasWidth: 600, canvasHeight: 800 } // Portrait for strip
-      
-      // Regenerate photo layout with new frame style and ORIGINAL layout
-      await createPhotoLayout(storedCapturedImages.value, originalLayout.value, {
-        ...canvasConfig,
-        title: '',
-        showTimestamp: true,
-        frameStyle: frameStyle,
-        frameColor: getFrameColor(frameStyle),
-        filter: currentFilter.value
-      })
-      
-      // Update the displayed image
-      const newImageData = getCanvasDataURL()
-      finalImage.value = newImageData
-    }
-  } catch (error) {
-    console.error('Frame change failed:', error)
+    alert('Download failed. Please try again.')
   }
 }
 

@@ -1,55 +1,57 @@
 <template>
-  <div class="bg-white rounded-lg shadow-lg p-6 max-w-4xl mx-auto">
-    <h2 class="text-2xl font-semibold text-gray-800 mb-4 text-center">
-      Your Photobooth Strip
-    </h2>
+  <div class="space-y-8">
+    <div class="bg-slate-800/30 backdrop-blur-sm rounded-2xl p-8 border border-slate-600/30">
+      <h2 class="text-2xl font-semibold text-white mb-6 text-center flex items-center justify-center gap-3">
+        <span class="text-3xl">🎉</span>
+        Your Photo Strip is Ready!
+      </h2>
 
-    <!-- Final Image Preview -->
-    <div class="mb-6 flex justify-center">
-      <div class="border-4 border-gray-200 rounded-lg overflow-hidden shadow-xl">
-        <img 
-          :src="imageDataURL" 
-          alt="Final photobooth result"
-          class="max-w-full h-auto"
-        />
+      <!-- Final Image Preview -->
+      <div class="mb-8 flex justify-center">
+        <div 
+          class="rounded-2xl overflow-hidden shadow-2xl bg-gray-900"
+          :style="layout === 'grid' ? 'width: 400px; height: 400px;' : 'width: 400px; height: 600px;'"
+        >
+          <img 
+            :src="imageDataURL" 
+            alt="Final photobooth result"
+            class="w-full h-full object-cover"
+          />
+        </div>
       </div>
+
+      <!-- Action Buttons -->
+      <div class="flex flex-col gap-4">
+        <button
+          @click="$emit('download')"
+          :disabled="isDownloading"
+          class="w-full py-4 bg-slate-700 hover:bg-slate-600 text-white font-bold text-lg rounded-2xl transition-all duration-300 flex items-center justify-center gap-3 shadow-lg hover:shadow-xl transform hover:scale-105 disabled:bg-gray-600 disabled:cursor-not-allowed disabled:transform-none"
+        >
+          <span class="text-2xl">{{ isDownloading ? '⏳' : '💾' }}</span>
+          {{ isDownloading ? 'Downloading...' : 'Download Photo' }}
+        </button>
+        
+        <button
+          @click="$emit('retake')"
+          class="w-full py-3 bg-orange-600 hover:bg-orange-500 text-white rounded-2xl transition-all duration-300 font-medium flex items-center justify-center gap-2"
+        >
+          <span class="text-xl">📸</span>
+          Take Photos Again
+        </button>
+
+        <button
+          @click="$emit('new-session')"
+          class="w-full py-3 border-2 border-slate-600/50 text-white rounded-2xl hover:bg-slate-700/30 transition-all duration-300 font-medium"
+        >
+          🔄 New Session
+        </button>
+      </div>
+
+      <!-- Info Text -->
+      <p class="text-center text-sm text-gray-400 mt-6">
+        Your photo is ready to download. All settings were applied during capture.
+      </p>
     </div>
-
-    <!-- Action Buttons -->
-    <div class="flex flex-col sm:flex-row gap-3 justify-center">
-      <button
-        @click="$emit('edit')"
-        class="px-6 py-3 bg-blue-600 hover:bg-blue-700 text-white font-medium rounded-lg transition-colors flex items-center justify-center gap-2"
-      >
-        <svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-          <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M11 5H6a2 2 0 00-2 2v11a2 2 0 002 2h11a2 2 0 002-2v-5m-1.414-9.414a2 2 0 112.828 2.828L11.828 15H9v-2.828l8.586-8.586z"></path>
-        </svg>
-        <span>Edit Photo</span>
-      </button>
-      
-      <button
-        @click="$emit('download')"
-        :disabled="isDownloading"
-        class="px-6 py-3 bg-green-600 hover:bg-green-700 text-white font-medium rounded-lg transition-colors disabled:bg-gray-400 disabled:cursor-not-allowed flex items-center justify-center gap-2"
-      >
-        <svg v-if="!isDownloading" class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-          <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M4 16v1a3 3 0 003 3h10a3 3 0 003-3v-1m-4-4l-4 4m0 0l-4-4m4 4V4"></path>
-        </svg>
-        <span>{{ isDownloading ? 'Downloading...' : 'Download Now' }}</span>
-      </button>
-
-      <button
-        @click="$emit('new-session')"
-        class="px-6 py-3 border-2 border-gray-300 hover:bg-gray-50 text-gray-700 font-medium rounded-lg transition-colors"
-      >
-        Take New Photos
-      </button>
-    </div>
-
-    <!-- Info Text -->
-    <p class="text-center text-sm text-gray-500 mt-4">
-      Your image is ready to download. No data is stored on our servers.
-    </p>
   </div>
 </template>
 
@@ -59,11 +61,15 @@ defineProps({
     type: String,
     required: true
   },
+  layout: {
+    type: String,
+    default: 'vertical'
+  },
   isDownloading: {
     type: Boolean,
     default: false
   }
 })
 
-defineEmits(['download', 'new-session', 'edit'])
+defineEmits(['download', 'new-session', 'retake'])
 </script>
