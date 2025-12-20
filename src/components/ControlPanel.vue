@@ -14,20 +14,20 @@
           :class="[
             'p-6 border-2 rounded-2xl text-left transition-all duration-300 backdrop-blur-sm',
             selectedLayout === layout.value
-              ? 'border-pink-400 bg-gradient-to-r from-pink-500/20 to-purple-500/20 text-white shadow-lg shadow-pink-500/25'
-              : 'border-white/20 bg-white/5 text-gray-300 hover:border-white/40 hover:bg-white/10'
+              ? 'border-slate-400 bg-slate-700/50 text-white shadow-lg shadow-slate-500/20'
+              : 'border-slate-600/50 bg-slate-800/30 text-gray-300 hover:border-slate-500 hover:bg-slate-700/30'
           ]"
         >
           <div class="flex items-center justify-between">
             <div>
               <div class="text-xl font-bold">{{ layout.label }}</div>
               <div class="text-sm opacity-75 mt-1">{{ layout.description }}</div>
-              <div class="text-xs font-medium mt-2 px-2 py-1 bg-white/10 rounded-full inline-block">
+              <div class="text-xs font-medium mt-2 px-3 py-1 bg-slate-600/50 rounded-full inline-block">
                 {{ layout.photoCount }}
               </div>
             </div>
             <div class="text-3xl">
-              {{ selectedLayout === layout.value ? '✨' : layout.value === 'vertical' ? '📱' : '🎨' }}
+              {{ selectedLayout === layout.value ? '✓' : layout.value === 'vertical' ? '📱' : '🎨' }}
             </div>
           </div>
         </button>
@@ -44,7 +44,7 @@
         v-model="eventTitle"
         type="text"
         placeholder="e.g., Birthday Party 2024"
-        class="w-full p-4 bg-white/10 backdrop-blur-sm border border-white/20 rounded-2xl text-white placeholder-gray-400 focus:ring-2 focus:ring-pink-400 focus:border-pink-400 transition-all"
+        class="w-full p-4 bg-slate-800/50 backdrop-blur-sm border border-slate-600/50 rounded-2xl text-white placeholder-gray-400 focus:ring-2 focus:ring-slate-400 focus:border-slate-400 transition-all"
         maxlength="30"
       />
     </div>
@@ -57,8 +57,8 @@
         :class="[
           'w-full py-4 px-6 rounded-2xl font-bold text-lg transition-all duration-300 flex items-center justify-center gap-3',
           canStart
-            ? 'bg-gradient-to-r from-pink-500 to-purple-600 hover:from-pink-600 hover:to-purple-700 text-white shadow-lg shadow-pink-500/25 hover:shadow-xl hover:shadow-pink-500/30 transform hover:scale-105'
-            : 'bg-gray-600/50 text-gray-400 cursor-not-allowed'
+            ? 'bg-slate-700 hover:bg-slate-600 text-white shadow-lg shadow-slate-700/30 hover:shadow-xl hover:shadow-slate-600/40 transform hover:scale-105'
+            : 'bg-slate-800/50 text-gray-500 cursor-not-allowed'
         ]"
       >
         <span class="text-2xl">{{ isCapturing ? '📸' : '🚀' }}</span>
@@ -68,7 +68,7 @@
       <button
         v-if="hasResults"
         @click="$emit('new-session')"
-        class="w-full py-3 px-6 border-2 border-white/20 rounded-2xl text-white hover:bg-white/10 transition-all duration-300 font-medium"
+        class="w-full py-3 px-6 border-2 border-slate-600/50 rounded-2xl text-white hover:bg-slate-700/30 transition-all duration-300 font-medium"
       >
         🔄 Take New Photos
       </button>
@@ -81,16 +81,16 @@
           <span class="text-lg">📊</span>
           Progress
         </span>
-        <span class="text-pink-300">{{ currentShot }}/{{ shotCount }}</span>
+        <span class="text-slate-300">{{ currentShot }}/{{ shotCount }}</span>
       </div>
-      <div class="w-full bg-white/10 rounded-full h-3 overflow-hidden">
+      <div class="w-full bg-slate-800/50 rounded-full h-3 overflow-hidden">
         <div 
-          class="bg-gradient-to-r from-pink-400 to-purple-500 h-3 rounded-full transition-all duration-500 shadow-lg"
+          class="bg-slate-500 h-3 rounded-full transition-all duration-500 shadow-lg"
           :style="{ width: `${(currentShot / shotCount) * 100}%` }"
         ></div>
       </div>
-      <p class="text-center text-gray-300 text-sm">
-        {{ currentShot === 0 ? 'Get ready! 📸' : currentShot === shotCount ? 'Processing... ✨' : 'Keep smiling! 😊' }}
+      <p class="text-center text-gray-400 text-sm">
+        {{ currentShot === 0 ? 'Get ready! 📸' : currentShot === shotCount ? 'Processing...' : 'Keep smiling! 😊' }}
       </p>
     </div>
   </div>

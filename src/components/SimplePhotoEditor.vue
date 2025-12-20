@@ -3,7 +3,7 @@
     <div class="grid lg:grid-cols-3 gap-8">
       <!-- Canvas Area -->
       <div class="lg:col-span-2">
-        <div class="bg-white/5 backdrop-blur-sm rounded-2xl p-6 border border-white/10">
+        <div class="bg-slate-800/30 backdrop-blur-sm rounded-2xl p-6 border border-slate-600/30">
           <h3 class="text-xl font-semibold text-white mb-4 flex items-center gap-2">
             <span class="text-2xl">🖼️</span>
             Your Photo Strip
@@ -81,13 +81,13 @@
             <div class="flex gap-3">
               <button
                 @click="clearOverlays"
-                class="px-4 py-2 text-sm bg-red-500/20 text-red-300 rounded-xl hover:bg-red-500/30 transition-all border border-red-500/30"
+                class="px-4 py-2 text-sm bg-red-900/30 text-red-300 rounded-xl hover:bg-red-900/50 transition-all border border-red-800/50"
               >
                 🗑️ Clear All
               </button>
               <button
                 @click="undoLast"
-                class="px-4 py-2 text-sm bg-white/10 text-gray-300 rounded-xl hover:bg-white/20 transition-all border border-white/20"
+                class="px-4 py-2 text-sm bg-slate-700/50 text-gray-300 rounded-xl hover:bg-slate-600/50 transition-all border border-slate-600/50"
               >
                 ↶ Undo
               </button>
@@ -96,19 +96,19 @@
             <div class="flex gap-2">
               <button
                 @click="applyFilter('none')"
-                :class="['px-4 py-2 text-sm rounded-xl transition-all', currentFilter === 'none' ? 'bg-gradient-to-r from-pink-500 to-purple-600 text-white shadow-lg' : 'bg-white/10 text-gray-300 hover:bg-white/20 border border-white/20']"
+                :class="['px-4 py-2 text-sm rounded-xl transition-all', currentFilter === 'none' ? 'bg-slate-600 text-white shadow-lg' : 'bg-slate-800/50 text-gray-300 hover:bg-slate-700/50 border border-slate-600/50']"
               >
                 Original
               </button>
               <button
                 @click="applyFilter('vintage')"
-                :class="['px-4 py-2 text-sm rounded-xl transition-all', currentFilter === 'vintage' ? 'bg-gradient-to-r from-pink-500 to-purple-600 text-white shadow-lg' : 'bg-white/10 text-gray-300 hover:bg-white/20 border border-white/20']"
+                :class="['px-4 py-2 text-sm rounded-xl transition-all', currentFilter === 'vintage' ? 'bg-slate-600 text-white shadow-lg' : 'bg-slate-800/50 text-gray-300 hover:bg-slate-700/50 border border-slate-600/50']"
               >
                 Vintage
               </button>
               <button
                 @click="applyFilter('bw')"
-                :class="['px-4 py-2 text-sm rounded-xl transition-all', currentFilter === 'bw' ? 'bg-gradient-to-r from-pink-500 to-purple-600 text-white shadow-lg' : 'bg-white/10 text-gray-300 hover:bg-white/20 border border-white/20']"
+                :class="['px-4 py-2 text-sm rounded-xl transition-all', currentFilter === 'bw' ? 'bg-slate-600 text-white shadow-lg' : 'bg-slate-800/50 text-gray-300 hover:bg-slate-700/50 border border-slate-600/50']"
               >
                 B&W
               </button>
@@ -120,7 +120,7 @@
       <!-- Tools Panel -->
       <div class="space-y-8">
         <!-- Frames -->
-        <div class="bg-white/5 backdrop-blur-sm rounded-2xl p-6 border border-white/10">
+        <div class="bg-slate-800/30 backdrop-blur-sm rounded-2xl p-6 border border-slate-600/30">
           <h3 class="text-xl font-semibold text-white mb-4 flex items-center gap-2">
             <span class="text-2xl">🖼️</span>
             Photo Frames
@@ -130,20 +130,20 @@
               v-for="frame in frames"
               :key="frame.id"
               @click="selectFrame(frame.id)"
-              :class="['p-4 border-2 rounded-xl text-left transition-all duration-300 flex items-center gap-4 w-full', selectedFrame === frame.id ? 'border-pink-400 bg-gradient-to-r from-pink-500/20 to-purple-500/20 text-white shadow-lg' : 'border-white/20 bg-white/5 text-gray-300 hover:border-white/40 hover:bg-white/10']"
+              :class="['p-4 border-2 rounded-xl text-left transition-all duration-300 flex items-center gap-4 w-full', selectedFrame === frame.id ? 'border-slate-400 bg-slate-700/50 text-white shadow-lg' : 'border-slate-600/50 bg-slate-800/30 text-gray-300 hover:border-slate-500 hover:bg-slate-700/30']"
             >
               <div class="text-3xl">{{ frame.emoji }}</div>
               <div class="flex-1">
                 <div class="font-semibold text-lg">{{ frame.name }}</div>
                 <div class="text-sm opacity-75">{{ frame.description }}</div>
               </div>
-              <div v-if="selectedFrame === frame.id" class="text-2xl">✨</div>
+              <div v-if="selectedFrame === frame.id" class="text-2xl">✓</div>
             </button>
           </div>
         </div>
 
         <!-- Stickers -->
-        <div class="bg-white/5 backdrop-blur-sm rounded-2xl p-6 border border-white/10">
+        <div class="bg-slate-800/30 backdrop-blur-sm rounded-2xl p-6 border border-slate-600/30">
           <h3 class="text-xl font-semibold text-white mb-4 flex items-center gap-2">
             <span class="text-2xl">😊</span>
             Stickers
@@ -153,7 +153,7 @@
               v-for="sticker in stickers"
               :key="sticker"
               @click="addSticker(sticker)"
-              class="text-3xl p-3 hover:bg-white/10 rounded-xl transition-all duration-300 hover:scale-110"
+              class="text-3xl p-3 hover:bg-slate-700/50 rounded-xl transition-all duration-300 hover:scale-110"
             >
               {{ sticker }}
             </button>
@@ -161,7 +161,7 @@
         </div>
 
         <!-- Text -->
-        <div class="bg-white/5 backdrop-blur-sm rounded-2xl p-6 border border-white/10">
+        <div class="bg-slate-800/30 backdrop-blur-sm rounded-2xl p-6 border border-slate-600/30">
           <h3 class="text-xl font-semibold text-white mb-4 flex items-center gap-2">
             <span class="text-2xl">✏️</span>
             Add Text
@@ -171,11 +171,11 @@
               v-model="newText"
               type="text"
               placeholder="Enter your text..."
-              class="w-full p-3 bg-white/10 backdrop-blur-sm border border-white/20 rounded-xl text-white placeholder-gray-400 focus:ring-2 focus:ring-pink-400 focus:border-pink-400 transition-all"
+              class="w-full p-3 bg-slate-700/50 backdrop-blur-sm border border-slate-600/50 rounded-xl text-white placeholder-gray-400 focus:ring-2 focus:ring-slate-400 focus:border-slate-400 transition-all"
               @keyup.enter="addText"
             />
             <div class="grid grid-cols-2 gap-3">
-              <select v-model="textColor" class="p-2 bg-white/10 backdrop-blur-sm border border-white/20 rounded-xl text-white focus:ring-2 focus:ring-pink-400">
+              <select v-model="textColor" class="p-2 bg-slate-700/50 backdrop-blur-sm border border-slate-600/50 rounded-xl text-white focus:ring-2 focus:ring-slate-400">
                 <option value="#000000" class="bg-gray-800">Black</option>
                 <option value="#ffffff" class="bg-gray-800">White</option>
                 <option value="#ff0000" class="bg-gray-800">Red</option>
@@ -184,7 +184,7 @@
                 <option value="#ffff00" class="bg-gray-800">Yellow</option>
                 <option value="#ff00ff" class="bg-gray-800">Pink</option>
               </select>
-              <select v-model="fontSize" class="p-2 bg-white/10 backdrop-blur-sm border border-white/20 rounded-xl text-white focus:ring-2 focus:ring-pink-400">
+              <select v-model="fontSize" class="p-2 bg-slate-700/50 backdrop-blur-sm border border-slate-600/50 rounded-xl text-white focus:ring-2 focus:ring-slate-400">
                 <option value="16" class="bg-gray-800">Small</option>
                 <option value="24" class="bg-gray-800">Medium</option>
                 <option value="32" class="bg-gray-800">Large</option>
@@ -193,7 +193,7 @@
             </div>
             <button
               @click="addText"
-              class="w-full py-3 bg-gradient-to-r from-blue-500 to-indigo-600 text-white rounded-xl hover:from-blue-600 hover:to-indigo-700 transition-all duration-300 font-medium"
+              class="w-full py-3 bg-slate-600 text-white rounded-xl hover:bg-slate-500 transition-all duration-300 font-medium"
             >
               ➕ Add Text
             </button>
@@ -201,7 +201,7 @@
         </div>
 
         <!-- Shapes -->
-        <div class="bg-white/5 backdrop-blur-sm rounded-2xl p-6 border border-white/10">
+        <div class="bg-slate-800/30 backdrop-blur-sm rounded-2xl p-6 border border-slate-600/30">
           <h3 class="text-xl font-semibold text-white mb-4 flex items-center gap-2">
             <span class="text-2xl">🔷</span>
             Shapes
@@ -209,13 +209,13 @@
           <div class="grid grid-cols-2 gap-3">
             <button
               @click="addShape('rectangle')"
-              class="p-3 border border-white/20 rounded-xl hover:bg-white/10 text-white transition-all duration-300"
+              class="p-3 border border-slate-600/50 rounded-xl hover:bg-slate-700/50 text-white transition-all duration-300"
             >
               ⬜ Rectangle
             </button>
             <button
               @click="addShape('circle')"
-              class="p-3 border border-white/20 rounded-xl hover:bg-white/10 text-white transition-all duration-300"
+              class="p-3 border border-slate-600/50 rounded-xl hover:bg-slate-700/50 text-white transition-all duration-300"
             >
               ⭕ Circle
             </button>
@@ -226,7 +226,7 @@
         <div class="space-y-4">
           <button
             @click="downloadImage"
-            class="w-full py-4 bg-gradient-to-r from-green-500 to-teal-600 hover:from-green-600 hover:to-teal-700 text-white font-bold text-lg rounded-2xl transition-all duration-300 flex items-center justify-center gap-3 shadow-lg hover:shadow-xl transform hover:scale-105"
+            class="w-full py-4 bg-slate-700 hover:bg-slate-600 text-white font-bold text-lg rounded-2xl transition-all duration-300 flex items-center justify-center gap-3 shadow-lg hover:shadow-xl transform hover:scale-105"
           >
             <span class="text-2xl">💾</span>
             Download Photo
@@ -234,7 +234,7 @@
           
           <button
             @click="emit('back')"
-            class="w-full py-3 border-2 border-white/20 text-white rounded-2xl hover:bg-white/10 transition-all duration-300 font-medium"
+            class="w-full py-3 border-2 border-slate-600/50 text-white rounded-2xl hover:bg-slate-700/30 transition-all duration-300 font-medium"
           >
             🔄 Take New Photos
           </button>
