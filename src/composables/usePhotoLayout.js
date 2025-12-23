@@ -54,7 +54,12 @@ export function usePhotoLayout() {
 
       // Draw frame border if needed (NO FILTER)
       if (frameStyle !== 'none') {
-        drawFrameBorder(ctx, canvas.width, canvas.height, frameStyle)
+        if (frameStyle === 'music') {
+          // For music frame, draw the frame overlay after all photos
+          await drawFrameBorder(ctx, canvas.width, canvas.height, frameStyle)
+        } else {
+          drawFrameBorder(ctx, canvas.width, canvas.height, frameStyle)
+        }
       }
 
       // Draw images with filter

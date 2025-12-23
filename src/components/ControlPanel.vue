@@ -207,7 +207,7 @@ const frameOptions = [
   { value: 'vintage', name: 'Vintage', emoji: '📸' },
   { value: 'galaxy', name: 'Galaxy', emoji: '🌌' },
   { value: 'love', name: 'Love', emoji: '💖' },
-  { value: 'custom', name: 'Custom', emoji: '🎨' }
+  { value: 'music', name: 'Music Player', emoji: '🎵' }
 ]
 
 const layoutOptions = [

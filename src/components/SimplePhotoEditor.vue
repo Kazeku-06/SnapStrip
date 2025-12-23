@@ -116,7 +116,7 @@ const frames = [
   { id: 'vintage', name: 'Vintage Film', description: '📸 Retro Vibes', emoji: '📸' },
   { id: 'galaxy', name: 'Galaxy Dream', description: '🌌 Space Magic', emoji: '🌌' },
   { id: 'love', name: 'Love Story', description: '💖 Romance', emoji: '💖' },
-  { id: 'custom', name: 'Custom Design', description: '🎨 Your Design', emoji: '🎨' }
+  { id: 'music', name: 'Music Player', description: '🎵 Retro Vibes', emoji: '🎵' }
 ]
 
 // Event handlers
@@ -215,13 +215,23 @@ const downloadImage = () => {
   position: relative;
 }
 
+/* Music Player Frame - Using your custom design */
+.frame-music {
+  border: none !important;
+  background: url('/frames/Frame-2.png') no-repeat center center;
+  background-size: 100% 100%;
+  padding: 0px;
+  position: relative;
+}
+
 /* Simplified frame styles - all using your custom designs */
 .frame-cute img,
 .frame-elegant img,
 .frame-party img,
 .frame-vintage img,
 .frame-galaxy img,
-.frame-love img {
+.frame-love img,
+.frame-music img {
   border-radius: 8px;
 }
 </style>

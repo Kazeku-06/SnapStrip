@@ -26,6 +26,11 @@ export const calculateLayout = (layoutType, images, canvasWidth = 800, canvasHei
     frameStyle: frameStyle
   }
 
+  // Special layout for music frame
+  if (frameStyle === 'music') {
+    return calculateMusicPlayerLayout(images, canvasWidth, canvasHeight)
+  }
+
   switch (layoutType) {
     case 'vertical': {
       const imageWidth = canvasWidth - (padding * 2)
@@ -75,6 +80,43 @@ export const calculateLayout = (layoutType, images, canvasWidth = 800, canvasHei
 }
 
 /**
+ * Calculate layout for music player frame (3 photos in specific positions)
+ */
+export const calculateMusicPlayerLayout = (images, canvasWidth = 400, canvasHeight = 800) => {
+  // Music player frame specific dimensions based on your design
+  const frameWidth = canvasWidth
+  const frameHeight = canvasHeight
+  
+  // Photo positions based on your music player design (Frame-2.png)
+  // These coordinates should match the white areas in your frame design
+  const photoWidth = 140   // Width of each photo slot (adjusted for your design)
+  const photoHeight = 105  // Height of each photo slot (adjusted for your design)
+  const startX = 130       // X position where photos start (centered in frame)
+  const startY = 240       // Y position where first photo starts (below the top section)
+  const photoSpacing = 125 // Vertical spacing between photos (adjusted for your layout)
+  
+  const layout = {
+    canvasWidth: frameWidth,
+    canvasHeight: frameHeight,
+    positions: [],
+    padding: 0,
+    frameStyle: 'music'
+  }
+  
+  // Position 3 photos vertically in the music player frame
+  for (let i = 0; i < Math.min(3, images.length); i++) {
+    layout.positions.push({
+      x: startX,
+      y: startY + (i * photoSpacing),
+      width: photoWidth,
+      height: photoHeight
+    })
+  }
+  
+  return layout
+}
+
+/**
  * Draw text with background
  */
 export const drawTextWithBackground = (ctx, text, x, y, fontSize = 16) => {
@@ -111,6 +153,8 @@ export const getFrameBackgroundColor = (frameStyle) => {
       return '#000428'
     case 'love':
       return '#ff9a9e'
+    case 'music':
+      return '#1a1a1a' // Dark background for music player theme
     case 'custom':
       return '#ff6b6b' // Atau warna sesuai desain kamu
     default:
@@ -122,6 +166,11 @@ export const getFrameBackgroundColor = (frameStyle) => {
  * Draw frame border around entire canvas
  */
 export const drawFrameBorder = (ctx, width, height, frameStyle) => {
+  if (frameStyle === 'music') {
+    // For music frame, we'll overlay the frame image instead of drawing borders
+    return drawMusicPlayerFrame(ctx, width, height)
+  }
+  
   const borderWidth = getFrameBorderWidth(frameStyle)
   const borderColor = getFrameBorderColor(frameStyle)
   
@@ -135,6 +184,25 @@ export const drawFrameBorder = (ctx, width, height, frameStyle) => {
     ctx.shadowBlur = 15
     ctx.strokeRect(borderWidth/2, borderWidth/2, width - borderWidth, height - borderWidth)
     ctx.shadowBlur = 0
+  }
+}
+
+/**
+ * Draw music player frame overlay
+ */
+export const drawMusicPlayerFrame = async (ctx, width, height) => {
+  try {
+    // Load the music frame image
+    const frameImage = await loadImage('/frames/Frame-2.png')
+    
+    // Draw the frame image on top of everything
+    ctx.drawImage(frameImage, 0, 0, width, height)
+  } catch (error) {
+    console.error('Failed to load music frame image:', error)
+    // Fallback: draw a simple border
+    ctx.strokeStyle = '#333333'
+    ctx.lineWidth = 4
+    ctx.strokeRect(2, 2, width - 4, height - 4)
   }
 }
 
@@ -192,6 +260,8 @@ export const getFrameBorderColor = (frameStyle) => {
       return '#004e92'
     case 'love':
       return '#fad0c4'
+    case 'music':
+      return '#333333' // Dark border for music theme
     case 'custom':
       return '#ff8c42' // Border color untuk custom frame
     default:
@@ -216,6 +286,8 @@ export const getFramePadding = (frameStyle) => {
       return 35  // Space theme
     case 'love':
       return 40  // Romantic spacing
+    case 'music':
+      return 25  // Tight spacing for music player layout
     case 'custom':
       return 35  // Custom spacing
     default:
