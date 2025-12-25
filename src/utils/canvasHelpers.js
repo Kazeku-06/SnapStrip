@@ -83,17 +83,25 @@ export const calculateLayout = (layoutType, images, canvasWidth = 800, canvasHei
  * Calculate layout for music player frame (3 photos in specific positions)
  */
 export const calculateMusicPlayerLayout = (images, canvasWidth = 400, canvasHeight = 800) => {
-  // Music player frame specific dimensions based on your design
+  // Debug logging
+  console.log('Music Player Layout Debug:')
+  console.log('Canvas size:', canvasWidth, 'x', canvasHeight)
+  
+  // Music player frame specific dimensions
   const frameWidth = canvasWidth
   const frameHeight = canvasHeight
   
-  // Photo positions based on your music player design (Frame-2.png)
-  // These coordinates should match the white areas in your frame design
-  const photoWidth = 140   // Width of each photo slot (adjusted for your design)
-  const photoHeight = 105  // Height of each photo slot (adjusted for your design)
-  const startX = 130       // X position where photos start (centered in frame)
-  const startY = 240       // Y position where first photo starts (below the top section)
-  const photoSpacing = 125 // Vertical spacing between photos (adjusted for your layout)
+  // Fixed coordinates to place photos INSIDE the green boxes
+  // Based on the image, green boxes are inside the music player frame
+  const startX = 275                              // X position inside the frame (not scaled)
+  const startY = 250                              // Y position of first green box
+  const photoWidth = 120                          // Width to fit inside green box
+  const photoHeight = 100                         // Height to fit inside green box
+  const photoSpacing = 130                        // Vertical spacing between green boxes
+  
+  console.log('Photo dimensions:', photoWidth, 'x', photoHeight)
+  console.log('Start position:', startX, ',', startY)
+  console.log('Photo spacing:', photoSpacing)
   
   const layout = {
     canvasWidth: frameWidth,
@@ -105,12 +113,14 @@ export const calculateMusicPlayerLayout = (images, canvasWidth = 400, canvasHeig
   
   // Position 3 photos vertically in the music player frame
   for (let i = 0; i < Math.min(3, images.length); i++) {
-    layout.positions.push({
+    const position = {
       x: startX,
       y: startY + (i * photoSpacing),
       width: photoWidth,
       height: photoHeight
-    })
+    }
+    console.log(`Photo ${i + 1} position:`, position)
+    layout.positions.push(position)
   }
   
   return layout

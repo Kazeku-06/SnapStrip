@@ -52,17 +52,7 @@ export function usePhotoLayout() {
       ctx.fillStyle = bgColor
       ctx.fillRect(0, 0, canvas.width, canvas.height)
 
-      // Draw frame border if needed (NO FILTER)
-      if (frameStyle !== 'none') {
-        if (frameStyle === 'music') {
-          // For music frame, draw the frame overlay after all photos
-          await drawFrameBorder(ctx, canvas.width, canvas.height, frameStyle)
-        } else {
-          drawFrameBorder(ctx, canvas.width, canvas.height, frameStyle)
-        }
-      }
-
-      // Draw images with filter
+      // Draw images with filter FIRST
       loadedImages.forEach((img, index) => {
         if (layout.positions[index]) {
           const pos = layout.positions[index]
@@ -74,12 +64,22 @@ export function usePhotoLayout() {
           // Reset filter immediately after drawing image
           ctx.filter = 'none'
           
-          // Add frame around each image if needed (NO FILTER)
-          if (frameStyle !== 'none') {
+          // Add frame around each image if needed (NO FILTER) - but not for music frame
+          if (frameStyle !== 'none' && frameStyle !== 'music') {
             drawImageFrame(ctx, pos, frameStyle)
           }
         }
       })
+
+      // Draw frame border/overlay AFTER photos (NO FILTER)
+      if (frameStyle !== 'none') {
+        if (frameStyle === 'music') {
+          // For music frame, draw the frame overlay AFTER all photos
+          await drawFrameBorder(ctx, canvas.width, canvas.height, frameStyle)
+        } else {
+          drawFrameBorder(ctx, canvas.width, canvas.height, frameStyle)
+        }
+      }
 
       // Add timestamp and title (NO FILTER)
       ctx.filter = 'none'
